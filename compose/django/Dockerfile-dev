@@ -1,0 +1,28 @@
+FROM python:3.5
+
+ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install -y build-essential wget fontconfig libjpeg62-turbo libssl-dev libxext6 libxrender-dev xfonts-base xfonts-75dpi
+RUN wget --quiet http://download.gna.org/wkhtmltopdf/0.12/0.12.2/wkhtmltox-0.12.2_linux-jessie-amd64.deb
+RUN dpkg -i wkhtmltox-0.12.2_linux-jessie-amd64.deb \
+  && apt-get remove -y $BUILD_PACKAGES \
+  && apt-get autoremove -y \
+  && apt-get clean \
+
+# Requirements have to be pulled and installed here, otherwise caching won't work
+COPY ./requirements /requirements
+RUN pip install -r /requirements/local.txt
+
+COPY ./compose/django/entrypoint.sh /entrypoint.sh
+RUN sed -i 's/\r//' /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+COPY ./compose/django/start-dev.sh /start-dev.sh
+RUN sed -i 's/\r//' /start-dev.sh
+RUN chmod +x /start-dev.sh
+
+WORKDIR /app
+
+ENTRYPOINT ["/entrypoint.sh"]

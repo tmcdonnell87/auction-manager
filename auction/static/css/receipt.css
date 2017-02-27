@@ -1,0 +1,12 @@
+.receipt-header {
+  text-align: center;
+}
+
+.chairs > li {
+  list-style-type: none;
+  padding-left:0;
+}
+
+table, th, td {
+    border: 1px solid black;
+}

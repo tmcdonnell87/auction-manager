@@ -16,6 +16,7 @@
     {% block css %}
     <!-- Your stuff: Third-party CSS libraries go here -->
 
+    <link href="{% static 'css/receipt.css' %}" rel="stylesheet">
     <!-- This file stores project-specific CSS -->
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
 
@@ -24,7 +25,44 @@
   </head>
 
   <body>
-    <div>Hello world</div>
+    <div class="container">
+      <div class="receipt-header">
+        <img src="{% static 'images/wa-logo.png' %}" />
+        <h1>{{ object.lot }} - {{ object.title }}</h1>
+      </div>
+      <div class="receipt-content">
+        <div>Congratulations on your purchase of auction lot {{ object.lot }}!</div>
+        <table style="width:100%">
+          <tr>
+            <th>Package Items</th>
+            <th>Pick Up at Event</th>
+            <th>Redemption Name</th>
+            <th>Redemption Contact</th>
+          </tr>
+          {% for item in object.item_set.all %}
+          <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.onsite_pickup|yesno }}</td>
+            <td>{{ item.contact_name }}</td>
+            <td>{{ item.contact_point }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      <div class="receipt-footer">
+        <p>Should you have any future issues redeeming your purchase, please contact Brian Deer at
+briandeer415@gmail.com.</p>
+        <p>Thank you for your support!
+          <ul class="chairs">
+            <li>Derick Brown</li>
+            <li>Kevin Chagnon</li>
+            <li>Brian Deer</li>
+            <li>Mike Hall</li>
+            <li>Joseph Rehrmann</li>
+          </ul>
+          <i>Co­Chairs, The 29th Annual Guardsmen Celebrity Dinner & Sports Auction</i>
+      </div>
+    <div>
   </body>
 </html>
 

@@ -46,3 +46,6 @@ redis>=2.10.5
 
 # Your custom requirements go here
 django-suit==0.2.24
+django-grappelli==2.9.1
+grappelli-nested-inlines==0.6.0
+django-wkhtmltopdf==3.1.0

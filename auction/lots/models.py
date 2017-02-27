@@ -23,7 +23,7 @@ class Lot(models.Model):
     restrictions = models.CharField(blank=True, max_length=140)
     FMV = models.PositiveIntegerField(null=True)
     predicted_sale = models.PositiveIntegerField(null=True)
-    cost = models.PositiveIntegerField(null=True)
+    cost = models.PositiveIntegerField(default=0)
     reviewed = models.BooleanField(
         default=False,
         help_text='The lot has been reviewed for accuracy by an auction chair'
@@ -36,6 +36,8 @@ class Lot(models.Model):
         default=False,
         help_text='The items has been reviewed complete and available on-site for sale'
     )
+    def __str__(self):
+        return self.type + '-' + str(self.lot) + '-' + self.title
 
 class Item(models.Model):
     lot = models.ForeignKey(Lot, on_delete=models.CASCADE)
@@ -43,6 +45,9 @@ class Item(models.Model):
     onsite_pickup = models.BooleanField(default=True)
     contact_name = models.CharField(max_length=50)
     contact_point = models.CharField(max_length=50)
+    def __str__(self):
+        return self.description
+
 
 class Wine(models.Model):
     lot = models.ForeignKey(Lot, on_delete=models.CASCADE)
@@ -51,6 +56,13 @@ class Wine(models.Model):
     size = models.CharField(default='750 ml', max_length=10)
     qty = models.PositiveSmallIntegerField(default=1)
     rating = models.CharField(blank=True, max_length=10)
+    def __str__(self):
+        return str(self.year) + ' ' + self.description + ' (' + self.description + ') x' + str(self.qty)
 
 
+"""
+class Auction(models.Model):
+    default_contact_name = models.CharField(max_length=50)
+    default_contact_point = models.CharField(max_length=50)
+"""
 

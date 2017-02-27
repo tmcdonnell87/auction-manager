@@ -2,11 +2,23 @@
   text-align: center;
 }
 
-.chairs > li {
+ul.chairs {
   list-style-type: none;
   padding-left:0;
+   margin-bottom: 2px;
 }
 
-table, th, td {
-    border: 1px solid black;
+.items-table {
+  width: 100%;
+}
+table.items-table, .items-table th, .items-table td {
+  border: 1px solid black;
+}
+
+.items-table td {
+  padding: 4px;
+}
+
+.center {
+  text-align: center;
 }

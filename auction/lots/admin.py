@@ -1,21 +1,20 @@
 from django.contrib import admin
 from .models import Lot, Wine, Item
+import nested_admin
 
-# Register your models here.
-class WineInline(admin.TabularInline):
+class WineInline(nested_admin.NestedTabularInline):
     model = Wine
-    verbose_name_plural = 'Wines'
-    min_num = 0
+    extra = 0
 
-class ItemInline(admin.StackedInline):
+class ItemInline(nested_admin.NestedStackedInline):
     model = Item
-    verbose_name_plural = 'Items'
-    min_num = 0
+    extra = 0
+    inlines = [WineInline,]
 
-@admin.register(Lot)
-class LotAdmin(admin.ModelAdmin):
+class LotAdmin(nested_admin.NestedModelAdmin):
     list_display = ('lot', 'type', 'title')
     inlines = [
         ItemInline,
-        WineInline,
     ]
+
+admin.site.register(Lot, LotAdmin)

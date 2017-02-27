@@ -50,14 +50,14 @@ class Item(models.Model):
 
 
 class Wine(models.Model):
-    lot = models.ForeignKey(Lot, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
     year = models.PositiveSmallIntegerField()
     description = models.CharField(max_length=50)
     size = models.CharField(default='750 ml', max_length=10)
     qty = models.PositiveSmallIntegerField(default=1)
     rating = models.CharField(blank=True, max_length=10)
     def __str__(self):
-        return str(self.year) + ' ' + self.description + ' (' + self.description + ') x' + str(self.qty)
+        return str(self.year) + ' ' + self.description + ' (' + self.size + ') x' + str(self.qty)
 
 
 """

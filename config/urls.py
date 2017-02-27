@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^about/$', TemplateView.as_view(template_name='pages/about.html'), name='about'),
 
     # Django Admin, use {% url 'admin:index' %}
+    url(r'^_nested_admin/', include('nested_admin.urls')),
     url(r'^grappelli/', include('grappelli.urls')), # grappelli URLS
     url(settings.ADMIN_URL, admin.site.urls),
 

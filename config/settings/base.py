@@ -35,7 +35,7 @@ if READ_DOT_ENV_FILE:
 DJANGO_APPS = [
     # Django suit for admin UI
     #'suit',
-    'grappelli_nested',
+    'nested_admin',
     'grappelli',
 
     # Default Django apps:

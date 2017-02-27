@@ -32,7 +32,10 @@
       </div>
       <div class="receipt-content">
         <div>Congratulations on your purchase of auction lot {{ object.lot }}!</div>
-        <table style="width:100%">
+        {% if object.description %}
+        <p><i>{{ object.description }}</i></p>
+        {% endif %}
+        <table class="items-table">
           <tr>
             <th>Package Items</th>
             <th>Pick Up at Event</th>
@@ -41,14 +44,26 @@
           </tr>
           {% for item in object.item_set.all %}
           <tr>
-            <td>{{ item.description }}</td>
-            <td>{{ item.onsite_pickup|yesno }}</td>
-            <td>{{ item.contact_name }}</td>
-            <td>{{ item.contact_point }}</td>
+            <td>
+              {{ item.description }}
+              {% if item.wine_set %}
+                <ul>
+                {% for wine in item.wine_set.all %}
+                  <li>{{wine}}</li>
+                {% endfor %}
+                </ul>
+              {% endif %}
+            </td>
+            <td class="center">{{ item.onsite_pickup|yesno }}</td>
+            <td class="center">{{ item.contact_name }}</td>
+            <td class="center">{{ item.contact_point }}</td>
           </tr>
           {% endfor %}
         </table>
       </div>
+      {% if object.restrictions %}
+      <p><b>Restrictions: </b>{{ object.restrictions }}</p>
+      {% endif %}
       <div class="receipt-footer">
         <p>Should you have any future issues redeeming your purchase, please contact Brian Deer at
 briandeer415@gmail.com.</p>

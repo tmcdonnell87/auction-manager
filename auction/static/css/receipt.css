@@ -1,16 +1,13 @@
 .receipt-header {
   text-align: center;
-}
-
-ul.chairs {
-  list-style-type: none;
-  padding-left:0;
-   margin-bottom: 2px;
+  margin-bottom: 25px;
 }
 
 .items-table {
   width: 100%;
+  margin: 20px 0px;
 }
+
 table.items-table, .items-table th, .items-table td {
   border: 1px solid black;
 }
@@ -19,6 +16,13 @@ table.items-table, .items-table th, .items-table td {
   padding: 4px;
 }
 
-.center {
-  text-align: center;
+.receipt-footer {
+  margin-top: 25px;
 }
+
+ul.chairs {
+  list-style-type: none;
+  padding-left:0;
+   margin-bottom: 2px;
+}
+

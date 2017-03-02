@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class LotsConfig(AppConfig):
-    name = 'auction.lots'
-    verbose_name = "Lots"
+class AuctionConfig(AppConfig):
+    name = 'auction.auction'
+    verbose_name = "Auction"
 
     def ready(self):
         """Override this to put in:

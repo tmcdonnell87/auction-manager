@@ -2,6 +2,10 @@ FROM python:3.5
 
 ENV PYTHONUNBUFFERED 1
 
+RUN wget -q http://download.gna.org/wkhtmltopdf/0.12/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+RUN tar xf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
+RUN mv wkhtmltox/bin/wkhtmltopdf /bin
+
 # Requirements have to be pulled and installed here, otherwise caching won't work
 COPY ./requirements /requirements
 

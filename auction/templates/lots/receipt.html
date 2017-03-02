@@ -15,25 +15,23 @@
 
     {% block css %}
     <!-- Your stuff: Third-party CSS libraries go here -->
-
     <link href="{% static 'css/receipt.css' %}" rel="stylesheet">
     <!-- This file stores project-specific CSS -->
     <link href="{% static 'css/project.css' %}" rel="stylesheet">
-
     {% endblock %}
-
   </head>
 
   <body>
-    <div class="container">
+  {% for lot in view.lots %}
+    <div class="lot">
       <div class="receipt-header">
         <img src="{% static 'images/wa-logo.png' %}" />
-        <h1>{{ object.lot }} - {{ object.title }}</h1>
+        <h1>{{ lot.lot }} - {{ lot.title }}</h1>
       </div>
       <div class="receipt-content">
-        <div>Congratulations on your purchase of auction lot {{ object.lot }}!</div>
-        {% if object.description %}
-        <p><i>{{ object.description }}</i></p>
+        <div>Congratulations on your purchase of auction lot #{{ lot.lot }}!</div>
+        {% if lot.description %}
+        <p><i>{{ lot.description }}</i></p>
         {% endif %}
         <table class="items-table">
           <tr>
@@ -42,7 +40,7 @@
             <th>Redemption Name</th>
             <th>Redemption Contact</th>
           </tr>
-          {% for item in object.item_set.all %}
+          {% for item in lot.item_set.all %}
           <tr>
             <td>
               {{ item.description }}
@@ -61,23 +59,23 @@
           {% endfor %}
         </table>
       </div>
-      {% if object.restrictions %}
-      <p><b>Restrictions: </b>{{ object.restrictions }}</p>
+      {% if lot.restrictions %}
+      <p><b>Restrictions: </b>{{ lot.restrictions }}</p>
       {% endif %}
       <div class="receipt-footer">
-        <p>Should you have any future issues redeeming your purchase, please contact Brian Deer at
-briandeer415@gmail.com.</p>
+        <p>Should you have any future issues redeeming your purchase, please contact [Chair Name] at
+first.last@email.com.</p>
         <p>Thank you for your support!
           <ul class="chairs">
-            <li>Derick Brown</li>
-            <li>Kevin Chagnon</li>
-            <li>Brian Deer</li>
-            <li>Mike Hall</li>
-            <li>Joseph Rehrmann</li>
+            <li>Adam Echter</li>
+            <li>Chris Reed</li>
+            <li>Jeff McFarland</li>
+            <li>Phillip Marshall</li>
+            <li>Thomas McKinley</li>
           </ul>
-          <i>Co­Chairs, The 29th Annual Guardsmen Celebrity Dinner & Sports Auction</i>
+          <i>Co­Chairs, The 41st Annual Guardsmen Wine Auction</i>
       </div>
     <div>
+  {% endfor %}
   </body>
 </html>
-

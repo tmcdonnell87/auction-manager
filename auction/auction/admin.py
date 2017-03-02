@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Lot, Wine, Item
 import nested_admin
+from .models import Lot, Wine, Item
+
 
 class WineInline(nested_admin.NestedTabularInline):
     model = Wine
@@ -12,7 +13,7 @@ class ItemInline(nested_admin.NestedStackedInline):
     inlines = [WineInline,]
 
 class LotAdmin(nested_admin.NestedModelAdmin):
-    list_display = ('lot', 'type', 'title')
+    list_display = ('lot', 'type', 'title', 'FMV', 'reviewed', 'received', 'confirmed')
     inlines = [
         ItemInline,
     ]

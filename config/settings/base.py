@@ -34,9 +34,10 @@ if READ_DOT_ENV_FILE:
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
     # Django suit for admin UI
-    #'suit',
     'nested_admin',
-    'grappelli',
+    'suit',
+    #'grappelli',
+    'wkhtmltopdf',
 
     # Default Django apps:
     'django.contrib.auth',
@@ -62,7 +63,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     # custom users app
     'auction.users.apps.UsersConfig',
-    'auction.lots.apps.LotsConfig',
+    'auction.auction.apps.AuctionConfig',
     # Your stuff: custom apps go here
 ]
 
@@ -128,7 +129,7 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'US/Pacific'
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#language-code
 LANGUAGE_CODE = 'en-us'
@@ -242,13 +243,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    #'allauth.account.auth_backends.AuthenticationBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 # Some really nice defaults
 ACCOUNT_AUTHENTICATION_METHOD = 'username'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_REQUIRED = False
+# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', False)
 ACCOUNT_ADAPTER = 'auction.users.adapters.AccountAdapter'
@@ -269,3 +270,36 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'Guardsmen Auctions',
+    'SHOW_REQUIRED_ASTERISK': True,
+    'CONFIRM_UNSAVED_CHANGES': True,
+    'MENU_OPEN_FIRST_CHILD': True,
+    'MENU': (
+        'auction',
+        '-',
+        {
+            'label': 'Generate receipts',
+            'url': '../auction/pdf/receipts',
+            'blank': True,
+            'permissions': 'auction.change_lot'
+        },
+        {
+            'label': 'Generate BidPal',
+            'url': '../auction/bidpal',
+            'blank': True,
+            'permissions': 'auction.change_lot'
+        },
+        {
+            'label': 'Generate live slides (not built)',
+            'url': '.',
+            'permissions': 'auction.change_lot'
+        },
+        {
+            'label': 'Generate silent display (not built)',
+            'url': '.',
+            'permissions': 'auction.change_lot'
+        }
+    )
+
+}

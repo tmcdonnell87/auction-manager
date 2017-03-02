@@ -10,6 +10,7 @@ class Lot(models.Model):
         max_length=1,
     )
     lot = models.IntegerField(unique=True, db_index=True)
+    title = models.CharField(max_length=50)
     short_desc = models.CharField(
         blank=True,
         max_length=140,
@@ -19,11 +20,13 @@ class Lot(models.Model):
         blank=True,
         help_text='A long description suitable for printed text (e.g. website, program)'
     )
-    title = models.CharField(max_length=50)
     restrictions = models.CharField(blank=True, max_length=140)
     FMV = models.PositiveIntegerField(null=True)
     predicted_sale = models.PositiveIntegerField(null=True)
     cost = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='uploads/', null=True)
+    start_bid = models.PositiveIntegerField(null=True)
+    min_raise = models.PositiveIntegerField(null=True)
     reviewed = models.BooleanField(
         default=False,
         help_text='The lot has been reviewed for accuracy by an auction chair'
@@ -58,11 +61,14 @@ class Wine(models.Model):
     rating = models.CharField(blank=True, max_length=10)
     def __str__(self):
         return str(self.year) + ' ' + self.description + ' (' + self.size + ') x' + str(self.qty)
-
+    @property
+    def full_desc(self):
+        return str(self.year) + ' ' + self.description + \
+        (' (' + self.rating + ') - ' if self.rating else ' - ') + \
+        self.size + ' (' + str(self.qty) + ')'
 
 """
 class Auction(models.Model):
     default_contact_name = models.CharField(max_length=50)
     default_contact_point = models.CharField(max_length=50)
 """
-

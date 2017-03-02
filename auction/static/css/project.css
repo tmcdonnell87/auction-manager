@@ -36,3 +36,15 @@
 [hidden][style="display: block;"] {
   display: block !important;
 }
+
+.center {
+  text-align: center;
+}
+
+body {
+  font-family: "Helvetica"
+}
+
+.lot {
+  page-break-before: always;
+}

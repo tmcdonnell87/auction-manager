@@ -13,8 +13,10 @@ if [ -z "$POSTGRES_USER" ]; then
     export POSTGRES_USER=postgres
 fi
 
-export DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_USER
-
+# defer to an explicit DATABASE_URL
+if [ -z "$DATABASE_URL" ]; then
+    export DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_USER
+fi
 
 function postgres_ready(){
 python << END

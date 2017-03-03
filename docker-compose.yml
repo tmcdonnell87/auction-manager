@@ -20,8 +20,11 @@ services:
     depends_on:
       - postgres
       - redis
+    entrypoint: /entrypoint.sh
     command: /gunicorn.sh
     env_file: .env
+    environment:
+      - PORT=5000
 
   nginx:
     build: ./compose/nginx

@@ -280,13 +280,13 @@ SUIT_CONFIG = {
         '-',
         {
             'label': 'Generate receipts',
-            'url': '../auction/pdf/receipts',
+            'url': '/auction/pdf/receipts',
             'blank': True,
             'permissions': 'auction.change_lot'
         },
         {
             'label': 'Generate BidPal',
-            'url': '../auction/bidpal',
+            'url': '/auction/bidpal',
             'blank': True,
             'permissions': 'auction.change_lot'
         },

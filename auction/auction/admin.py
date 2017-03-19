@@ -15,7 +15,7 @@ class ItemInline(nested_admin.NestedStackedInline):
     inlines = [WineInline,]
 
 class LotAdmin(nested_admin.NestedModelAdmin):
-    list_display = ('lot', 'type', 'title', 'FMV', 'reviewed', 'received', 'confirmed')
+    list_display = ('lot', 'type', 'title', 'FMV', 'confirmed', 'reviewed', 'received', 'confirmed')
     inlines = [
         ItemInline,
     ]
@@ -37,7 +37,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
             'fields': ('FMV', 'predicted_sale', 'cost', 'start_bid', 'min_raise',)
         }),
         ('Review', {
-            'fields': ('reviewed', 'received', 'confirmed',)
+            'fields': ('complete', 'reviewed', 'received', 'confirmed',)
         }),
         ('Admin', {
             'fields': ('notes',)

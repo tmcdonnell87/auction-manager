@@ -271,6 +271,7 @@ ADMIN_URL = r'^admin/'
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
 SUIT_CONFIG = {
+    'SEARCH_URL': '/admin/auction/lot/',
     'ADMIN_NAME': 'Guardsmen Auctions',
     'SHOW_REQUIRED_ASTERISK': True,
     'CONFIRM_UNSAVED_CHANGES': True,

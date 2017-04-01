@@ -27,6 +27,16 @@ urlpatterns = [
         name='slide-pdf'
     ),
     url(
+        regex=r'^email$',
+        view=views.LotPreviewEmailView.as_view(),
+        name='preview-email'
+    ),
+    url(
+        regex=r'^pdf/email$',
+        view=views.LotPreviewEmailPDFView.as_view(),
+        name='preview-email-pdf'
+    ),
+    url(
         regex=r'^bidpal$',
         view=views.LotBidPalListView,
         name='bidpal-csv'

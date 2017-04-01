@@ -18,6 +18,7 @@ services:
       context: .
       dockerfile: ./compose/django/Dockerfile-dev
     command: /start-dev.sh
+    env_file: .env
     depends_on:
       - postgres
     environment:

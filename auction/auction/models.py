@@ -22,10 +22,10 @@ class Lot(models.Model):
         help_text='A long description suitable for printed text (e.g. website, program)'
     )
     restrictions = models.CharField(blank=True, max_length=140)
+    image = models.ImageField(upload_to='uploads/', null=True, blank=True)
     FMV = models.PositiveIntegerField(null=True)
     predicted_sale = models.PositiveIntegerField(null=True)
     cost = models.PositiveIntegerField(default=0)
-    image = models.ImageField(upload_to='uploads/', null=True, blank=True)
     start_bid = models.PositiveIntegerField(null=True)
     min_raise = models.PositiveIntegerField(null=True)
     complete = models.BooleanField(
@@ -47,6 +47,10 @@ class Lot(models.Model):
     notes = models.TextField(
         blank=True,
         help_text='Internal notes on the lot'
+    )
+    pickup_instructions = models.TextField(
+        blank=True,
+        help_text='Additional redemption instructions for the lot'
     )
     item_description_override = models.TextField(
         blank=True,

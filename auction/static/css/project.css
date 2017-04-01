@@ -1,4 +1,8 @@
 /* These styles are generated from project.scss. */
+@font-face {
+	font-family: "Trajan Pro";
+	src: url('../fonts/Trajan Pro Regular.ttf');
+}
 
 .alert-debug {
   color: black;
@@ -48,3 +52,4 @@ body {
 .lot {
   page-break-before: always;
 }
+

@@ -1,0 +1,98 @@
+{% load staticfiles i18n %}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}Guardsmen Auction Manager{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+
+    {% block css %}
+    <!-- Your stuff: Third-party CSS libraries go here -->
+
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+    <!-- This file stores project-specific CSS -->
+    <link href="{% static 'css/email.css' %}" rel="stylesheet">
+
+    {% endblock %}
+  </head>
+
+  <body>
+    <div id="background">
+    <div class="overview">
+      <img src="{% static 'images/wa-logo.jpg' %}" height="350"/>
+      <h1>The 41st Annual<br>Guardsmen Wine Auction</h1>
+      <h3>Saturday, April 8th, 2017 | The Palace Hotel, San Francisco, CA</h3>
+      <h2 class="schedule">Schedule</h2>
+      <hr>
+      <div class="timing">
+        <div class="time">4:00 PM</div>
+        <div class="event">Trade-only VIP</div>
+      </div>
+      <div class="timing">
+        <div class="time">5:00 PM</div>
+        <div class="event">VIP Pre-Party (VIP ticket holders only)</div>
+      </div>
+      <div class="timing">
+        <div class="time">5:30 PM</div>
+        <div class="event">Tasting and Silent Auction</div>
+      </div>
+      <div class="timing">
+        <div class="time">7:30 PM</div>
+        <div class="event">Dinner and Live Auction</div>
+      </div>
+      <div class="timing">
+        <div class="time">10:00 PM</div>
+        <div class="event">Band</div>
+      </div>
+      <h5 class="more">For the latest information on the event details, please visit www.sfwineauction.com</h5>
+    </div>
+    {% for lot in view.lots %}
+    <div class="compact-lot">
+      <div class="lot-number-display">
+        <div class="item-label">Item #</div>
+        <div class="lot-number">{{ lot.lot }}</div>
+      </div>
+      <h2>{{ lot.title }}</h2>
+      {% if lot.image %}
+        <img src="{{ lot.image.url }}">
+      {% endif %}
+      <p>{{ lot.description | linebreaks }}</p>
+      {% for item in lot.item_set.all %}
+      {% if item.wine_set %}
+        <!-- note:
+          this won't look good if wines are split into multiple items
+          as the table won't align
+          -->
+        <table class="wine-table">
+        {% for wine in item.wine_set.all %}
+          <tr>
+            <td>{{wine.year}}</td>
+            <td>
+              {{wine.description}}
+              {% if wine.rating %}
+              <span> ({{wine.rating}})</span>
+              {% endif %}
+            </td>
+            <td>{{wine.size}}<span> ({{wine.qty}})</td>
+          </tr>
+        {% endfor %}
+        </table>
+      {% endif %}
+      {% endfor %}
+      <p><b>Fair Market Value: </b>${{ lot.FMV }}</p>
+      {% if lot.restrictions %}
+      <p><b>Restrictions: </b>{{ lot.restrictions }}</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+    <div class="spacer" />
+    </div>
+  </body>
+</html>

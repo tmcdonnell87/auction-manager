@@ -1,6 +1,7 @@
 .receipt-header {
   text-align: center;
   margin-bottom: 25px;
+  font-family: "Trajan Pro"
 }
 
 .items-table {
@@ -13,7 +14,7 @@ table.items-table, .items-table th, .items-table td {
 }
 
 .items-table td {
-  padding: 4px;
+  padding: 10px 4px;
 }
 
 .receipt-footer {

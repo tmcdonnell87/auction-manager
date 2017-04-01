@@ -1,0 +1,106 @@
+#background {
+  margin: -8px;
+  /* background-image: url('../images/pacifica-wine-division-vineyard-management-vineyard-grapes.jpg'); */
+  position: relative;
+}
+
+#background::after{
+  content: "";
+  background: url('../images/pacifica-wine-division-vineyard-management-vineyard-grapes.jpg');
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-size: 1700px 1054px;
+  position: absolute;
+  z-index: -1;
+  -webkit-print-color-adjust: exact;
+  -webkit-filter: opacity(1);
+  filter: opacity(1);
+}
+
+.overview {
+  text-align: center;
+  page-break-after: always;
+  position: relative;
+  height: 10.5in;
+  opacity: 1;
+}
+
+.overview > h1 {
+  font-size: 2.5em;
+  color: darkgreen;
+}
+
+.overview > hr {
+  width: 500px;
+}
+
+.overview .schedule {
+  margin: 3em 0 0 0;
+}
+
+.overview .timing {
+  margin-top: 0.83em;
+}
+
+.overview .timing > .time {
+  font-size: 1.2em;
+}
+
+.overview .timing > .time {
+  font-size: larger;
+}
+
+.overview .more {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.compact-lot {
+  page-break-inside: avoid;
+  padding: 0.5in;
+}
+
+.wine-table td {
+  padding: 0 5px;
+}
+
+.compact-lot > img {
+  float: right;
+  width: 2.5in;
+  margin: 0 0.5in 0.5in 0.5in;
+  border: 2px black solid;
+}
+
+.lot-number-display {
+  font-size: 0;
+}
+
+.lot-number-display > .item-label {
+  background-color: darkgreen;
+  font-size: 24px;
+  display: inline-block;
+  color: white;
+  padding: 3px;
+  border: darkgreen 2px solid;
+}
+
+.lot-number-display > .lot-number {
+  color: darkgreen;
+  font-size: 24px;
+  display: inline-block;
+  padding: 3px;
+  width: 32px;
+  text-align: center;
+  border: darkgreen 2px solid;
+}
+
+.spacer {
+  height: 11in;
+}

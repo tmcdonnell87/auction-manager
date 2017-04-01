@@ -15,7 +15,7 @@ class ItemInline(nested_admin.NestedStackedInline):
     inlines = [WineInline,]
 
 class LotAdmin(nested_admin.NestedModelAdmin):
-    list_display = ('lot', 'type', 'title', 'FMV', 'complete', 'reviewed', 'received', 'confirmed')
+    list_display = ('lot', 'type', 'title', 'FMV', 'predicted_sale', 'complete', 'reviewed', 'received', 'confirmed')
     inlines = [
         ItemInline,
     ]
@@ -31,7 +31,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
         }),
         ('Advanced', {
             'classes': ('collapse', ),
-            'fields': ('item_description_override',)
+            'fields': ('pickup_instructions', 'item_description_override',)
         }),
         ('Financial', {
             'fields': ('FMV', 'predicted_sale', 'cost', 'start_bid', 'min_raise',)
@@ -45,10 +45,11 @@ class LotAdmin(nested_admin.NestedModelAdmin):
     )
     list_filter = ('type', )
     search_fields = ['lot', 'title', 'short_desc']
+    list_editable = ('FMV', 'predicted_sale', 'confirmed', 'reviewed', 'received', 'complete')
 
 class WineAdmin(admin.ModelAdmin):
     list_display = ('item', 'year', 'description', 'size', 'qty', 'rating', 'confirmed')
-    search_fields = ('year', 'description')
+    search_fields = ('year', 'description', 'item__title', 'lot__title')
     list_editable = ('year', 'description', 'size', 'qty', 'rating', 'confirmed')
 
 class ItemAdmin(admin.ModelAdmin):

@@ -25,7 +25,7 @@
   {% for lot in view.lots %}
     <div class="lot">
       <div class="receipt-header">
-        <img src="{% static 'images/wa-logo.png' %}" />
+        <img src="{% static 'images/wa-logo.jpg' %}" width=300/>
         <h1>{{ lot.lot }} - {{ lot.title }}</h1>
       </div>
       <div class="receipt-content">
@@ -44,7 +44,7 @@
           <tr>
             <td>
               {{ item.description }}
-              {% if item.wine_set %}
+              {% if item.wine_set.exists %}
                 <ul>
                 {% for wine in item.wine_set.all %}
                   <li>{{wine}}</li>
@@ -63,8 +63,8 @@
       <p><b>Restrictions: </b>{{ lot.restrictions }}</p>
       {% endif %}
       <div class="receipt-footer">
-        <p>Should you have any future issues redeeming your purchase, please contact [Chair Name] at
-first.last@email.com.</p>
+        <p>Should you have any future issues redeeming your purchase, please contact Terry McDonnell at
+wineauction@guardsmen.org.</p>
         <p>Thank you for your support!
           <ul class="chairs">
             <li>Adam Echter</li>

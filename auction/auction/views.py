@@ -27,13 +27,34 @@ class LotReceiptListView(TemplateView):
             qs = qs.filter(lot__in=self.request.GET['lot'].split(','))
         else:
             qs = qs.all()
+        qs = qs.filter(lot__lt=1000)
         qs = qs.order_by('lot')
         return qs
 
 class LotSlideListView(TemplateView):
     template_name = 'lots/live_slide.html'
     def lots(self):
-        return Lot.objects.all().order_by('lot')
+        qs = Lot.objects
+        if 'lot' in self.request.GET:
+            qs = qs.filter(lot__in=self.request.GET['lot'].split(','))
+        else:
+            qs = qs.all()
+        qs = qs.filter(lot__lt=1000)
+        qs = qs.order_by('lot')
+        return qs
+
+class LotSilentListView(TemplateView):
+    template_name = 'lots/silent.html'
+    def lots(self):
+        qs = Lot.objects
+        if 'lot' in self.request.GET:
+            qs = qs.filter(lot__in=self.request.GET['lot'].split(','))
+        else:
+            qs = qs.all()
+        qs = qs.filter(lot__lt=1000)
+        qs.filter(type='S')
+        qs = qs.order_by('lot')
+        return qs
 
 class LotPreviewEmailView(TemplateView):
     template_name = 'lots/preview_email.html'
@@ -73,10 +94,25 @@ class LotSlidePDFView(PDFTemplateView, LotSlideListView):
 def LotBidPalListView(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="bidpal.csv"'
-    lots = Lot.objects.all()
+    qs = Lot.objects
+    if 'lot' in request.GET:
+        qs = qs.filter(lot__in=request.GET['lot'].split(','))
+    else:
+        qs = qs.all()
+    qs = qs.filter(lot__lt=1000)
+    lots = qs.order_by('lot', 'category')
     writer = csv.writer(response)
     writer.writerow(['Lot', 'Title', 'Category', 'Description', 'Value', 'Start Bid', 'Min Raise', 'Type'])
     for lot in lots:
-        writer.writerow([lot.lot, lot.title, '', lot_description(lot), lot.FMV, lot.start_bid, lot.min_raise, lot.get_type_display()])
+        writer.writerow([
+            lot.lot,
+            lot.title,
+            lot.get_category_display(),
+            lot_description(lot),
+            lot.FMV,
+            lot.start_bid,
+            lot.min_raise,
+            lot.get_type_display()
+        ])
     return response
 

@@ -27,6 +27,11 @@ urlpatterns = [
         name='slide-pdf'
     ),
     url(
+        regex=r'^silent$',
+        view=views.LotSilentListView.as_view(),
+        name='silent'
+    ),
+    url(
         regex=r'^email$',
         view=views.LotPreviewEmailView.as_view(),
         name='preview-email'

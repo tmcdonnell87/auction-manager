@@ -60,12 +60,13 @@
         <div class="lot-number">{{ lot.lot }}</div>
       </div>
       <h2>{{ lot.title }}</h2>
-      {% if lot.image %}
+      <div class="description">
+        {% if lot.image %}
         <img src="{{ lot.image.url }}">
-      {% endif %}
-      <p>{{ lot.description | linebreaks }}</p>
-      {% for item in lot.item_set.all %}
-      {% if item.wine_set %}
+        {% endif %}
+        <p>{{ lot.description | linebreaks }}</p>
+        {% for item in lot.item_set.all %}
+        {% if item.wine_set %}
         <!-- note:
           this won't look good if wines are split into multiple items
           as the table won't align
@@ -84,8 +85,9 @@
           </tr>
         {% endfor %}
         </table>
-      {% endif %}
-      {% endfor %}
+        {% endif %}
+        {% endfor %}
+      </div>
       <p><b>Fair Market Value: </b>${{ lot.FMV }}</p>
       {% if lot.restrictions %}
       <p><b>Restrictions: </b>{{ lot.restrictions }}</p>

@@ -1,0 +1,122 @@
+
+#background {
+  margin: -8px;
+  /* background-image: url('../images/pacifica-wine-division-vineyard-management-vineyard-grapes.jpg'); */
+  position: relative;
+}
+
+#background::after{
+  content: "";
+  background: url('../images/pacifica-wine-division-vineyard-management-vineyard-grapes.jpg');
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-size: 1700px 978px;
+  position: absolute;
+  z-index: -1;
+  -webkit-print-color-adjust: exact;
+  -webkit-filter: opacity(1);
+  filter: opacity(1);
+}
+
+.lot {
+  position: relative;
+  padding: 20px;
+  height: 938px;
+}
+
+.header {
+  font-family: "Trajan Pro";
+  display: table;
+}
+
+.lot-number-display {
+  width: 150px;
+  text-align: center;
+  display: table-cell;
+}
+
+.lot-number-display > .item-label {
+  background-color: rgb(0, 65, 51);
+  width: 100%;
+  font-size: 1.5em;
+  color: white;
+  padding: 3px;
+  border: rgb(0, 65, 51) 2px solid;
+}
+
+.lot-number-display > .lot-number {
+  color: rgb(0, 65, 51);
+  font-size: 1.5em;
+  padding: 3px;
+  width: 100%;
+  text-align: center;
+  border: rgb(0, 65, 51) 2px solid;
+}
+
+.title {
+  font-size: 2.3em;
+  /* 150 (lot marker) + 30 (lot offset) + 30 (padding) */
+  padding-left: 20px;
+  display: table-cell;
+}
+
+
+.content {
+  padding: 10px;
+  height: 100%;
+  position: relative;
+  /* wkhtml no flexie
+  display: flex;
+  flex-direction: column;
+  */
+}
+
+
+
+hr {
+  margin-top: 20px;
+  height: 3px;
+  background-color: #333;
+  border: none;
+}
+
+.guardsmen-brand {
+  position: absolute;
+  bottom: 0;
+  margin: auto;
+  left: 0;
+  right: 0;
+  height: 300px;
+}
+
+.item-description {
+  padding-top: 10px;
+}
+
+.item-description .wine-table {
+  width: 100%;
+  padding-left: 20px;
+  font-size: 1.1em;
+}
+
+.item-title {
+  font-size: 1.2em;
+}
+
+.content > img {
+  margin-top: 20px;
+  float: right;
+  border: 2px solid black;
+}
+
+.restrictions {
+  padding-top: 20px;
+}
+
+.lot-description {
+  padding: 10px 15px 0 15px;
+  font-style: italic;
+}

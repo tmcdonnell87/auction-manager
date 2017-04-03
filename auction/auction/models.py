@@ -21,6 +21,27 @@ class Lot(models.Model):
         blank=True,
         help_text='A long description suitable for printed text (e.g. website, program)'
     )
+    # Categories
+    CAB = 'C'
+    PINOT = 'P'
+    MIXEDWINE = 'W'
+    GOLF = 'G'
+    EXPERIENCE = 'E'
+    OTHER = 'O'
+    SUPERSILENT = 'S'
+    category = models.CharField(
+        choices=(
+            (CAB, 'Cabernet Sauvignon'),
+            (PINOT, 'Pinot Noir'),
+            (MIXEDWINE, 'Other and Mixed Wine'),
+            (GOLF, 'Golf'),
+            (EXPERIENCE, 'Experiences'),
+            (OTHER, 'Other (non-wine)'),
+            (SUPERSILENT, 'Super Silent')
+        ),
+        default=MIXEDWINE,
+        max_length=1
+    )
     restrictions = models.CharField(blank=True, max_length=140)
     image = models.ImageField(upload_to='uploads/', null=True, blank=True)
     FMV = models.PositiveIntegerField(null=True)

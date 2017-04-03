@@ -24,7 +24,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
     }
     fieldsets = (
         ('Main', {
-            'fields': ('type', 'lot', 'title',)
+            'fields': ('type', 'lot', 'title', 'category', )
         }),
         ('Description', {
             'fields': ('short_desc', 'description', 'restrictions', 'image')

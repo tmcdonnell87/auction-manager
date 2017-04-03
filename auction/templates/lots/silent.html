@@ -1,0 +1,86 @@
+{% load staticfiles i18n %}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}Guardsmen Auction Manager{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+
+    {% block css %}
+    <!-- Your stuff: Third-party CSS libraries go here -->
+
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+    <!-- This file stores project-specific CSS -->
+    <link href="{% static 'css/silent.css' %}" rel="stylesheet">
+
+    {% endblock %}
+  </head>
+
+  <body>
+    <div id="background">
+    {% for lot in view.lots %}
+    <div class="lot">
+      <div class="header">
+        <div class="lot-number-display">
+          <div class="item-label">Item #</div>
+          <div class="lot-number">{{ lot.lot }}</div>
+        </div>
+        <h1 class="center title">{{lot.title}}</h1>
+      </div>
+      <hr>
+      <div class="content">
+        {% if lot.image %}
+        <img width=250 src="{{ lot.image.url }}">
+        {% endif %}
+        <h2>{{ lot.short_desc }}</h2>
+        <div class="item-container">
+          <ul class="item-descriptions">
+          {% for item in lot.item_set.all %}
+            <li class="item-description">
+              <div class="item-title">{{ item }}</div>
+              {% if item.wine_set.exists %}
+                <!-- note:
+                  this won't look good if wines are split into multiple items
+                  as the table won't align
+                  -->
+                <table class="wine-table">
+                {% for wine in item.wine_set.all %}
+                  <tr>
+                    <td>{{wine.year}}</td>
+                    <td>
+                      {{wine.description}}
+                      {% if wine.rating %}
+                      <span> ({{wine.rating}})</span>
+                      {% endif %}
+                    </td>
+                    <td>{{wine.size}}<span> ({{wine.qty}})</td>
+                  </tr>
+                {% endfor %}
+                </table>
+              {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+          <div class="lot-description">
+            {{ lot.description | linebreaks }}
+          </div>
+          {% if lot.restrictions %}
+          <div class="restrictions">
+            <b>Restrictions: </b>{{lot.restrictions}}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" />
+    </div>
+    {% endfor %}
+  </div>
+  </body>
+</html>

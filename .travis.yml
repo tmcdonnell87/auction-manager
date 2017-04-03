@@ -5,6 +5,6 @@ services:
 before_install:
   - docker build -f ./compose/django/Dockerfile -t registry.heroku.com/guardsmen-auction/web .
 after_success:
-  - docker login --email=_ --username=_ --password="$HEROKU"
+  - docker login --email=_ --username=_ --password="$HEROKU" registry.heroku.com
   - docker push registry.heroku.com/guardsmen-auction/web
 

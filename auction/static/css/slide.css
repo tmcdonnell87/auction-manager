@@ -1,117 +1,146 @@
-body {
-  margin: 0px;
-  padding: 0px;
+/* Background */
+#background {
+  margin: -8px;
+  /* background-image: url('../images/pacifica-wine-division-vineyard-management-vineyard-grapes.jpg'); */
+  position: relative;
+}
+
+#background::after{
+  content: "";
+  background: url('../images/pacifica-wine-division-vineyard-management-vineyard-grapes.jpg');
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-size: 1700px 815px;
+  position: absolute;
+  z-index: -1;
+  -webkit-print-color-adjust: exact;
+  -webkit-filter: opacity(1);
+  filter: opacity(1);
 }
 
 .lot {
-  height: 768px;
-  width: 1024px;
   position: relative;
   padding: 20px;
+  height: 774px;
 }
 
-.layer {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  margin: -20px;
-  /*
-    background-image: url('../images/pacifica-wine-division-vineyard-management-vineyard-grapes.jpg');
-  background-size: 100%;
-  background-repeat: no-repeat;
-  */
-}
-.content {
-  padding: 20px 40px;
-  height: 100%;
-  position: relative;
-  /* wkhtml no flexie
-  display: flex;
-  flex-direction: column;
-  */
-}
-
-.lotMarker {
-  position: absolute;
-  top: -30px;
-  left: -30px;
-  width: 160px;
-  height: 160px;
-  background-color: #dd4040;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 30px;
-  text-align: center;
-  z-index: 99;
-  display: table;
-  overflow-y: hidden;
-}
-
-.lotMarker > div:first-child {
-  margin-top: 60px;
-}
-
-.title {
-  font-size: 3em;
-  /* 160 (lot marker) - 30 (lot offset) - 20 (padding) */
-  margin-left: 110px;
-}
-
-
-
-hr {
-  height: 5px;
-  background-color: #333;
-  border: none;
-}
-
-.guardsmen-brand {
-  position: absolute;
-  bottom: 60px;
-  right: 40px;
-  width: 200px;
-}
-
-.item-container {
-  /* wkhtml no flexie
-  flex: 1;
-  display: flex;
-  */
+/* Header */
+.header {
+  font-family: "Trajan Pro";
   display: table;
   width: 100%
 }
 
-.item-description-column {
-  /* flex: 1; */
+.lot-number-display {
+  width: 150px;
+  text-align: center;
+  display: table-cell;
+}
+
+.lot-number-display > .item-label {
+  background-color: rgb(0, 65, 51);
   width: 100%;
+  font-size: 1.5em;
+  color: white;
+  padding: 3px;
+  border: rgb(0, 65, 51) 2px solid;
+}
+
+.lot-number-display > .lot-number {
+  color: rgb(0, 65, 51);
+  font-size: 1.5em;
+  padding: 3px;
+  width: 100%;
+  text-align: center;
+  border: rgb(0, 65, 51) 2px solid;
+}
+
+.title {
+  font-size: 3em;
+  /* 150 (lot marker) + 30 (lot offset) + 30 (padding) */
+  padding-left: 20px;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+hr {
+  margin-top: 20px;
+  height: 3px;
+  background-color: #333;
+  border: none;
+}
+
+/* Content */
+.content {
+  padding: 10px;
+  height: 100%;
   position: relative;
+}
+
+.content .hook {
+  font-size: 1.75em;
+}
+
+.item-container {
+  display: flex;
+}
+
+.item-container > .item-descriptions {
+  flex-grow: 10;
+}
+
+.item-title {
+  font-size: 1.6em;
+}
+
+.item-description {
+  padding-top: 10px;
 }
 
 .item-description .wine-table {
   width: 100%;
   padding-left: 20px;
-  font-size: 1.2em;
-  margin-top: -10px;
+  font-size: 1.4em;
 }
 
-.item-description > p {
+.wine-qty {
+  min-width: 110px;
+}
+
+.fmv {
+  margin-top: 30px;
   font-size: 1.5em;
 }
 
-
-.item-image-column {
-  display: table-cell;
-  width: 250px;
-  text-align: center;
-  margin: 50px 50px 50px 10px;
-}
-
-.item-image-column > img {
-  width: 100%;
+.item-container > img {
+  max-height: 270px;
+  margin: 10px 0 0 10px;
   border: 2px solid black;
 }
 
-.restrictions {
+.footer {
   position: absolute;
+  margin: auto;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.restrictions {
+  display: table-cell;
+  position: absolute;
+  font-size: 1.3em;
+  max-width: 75%;
   bottom: 30px;
+  left: 30px;
+}
+
+.guardsmen-brand {
+  float: right;
+  margin-right: 10px;
+  height: 250px;
 }

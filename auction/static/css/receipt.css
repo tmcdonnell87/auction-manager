@@ -1,7 +1,22 @@
+body {
+  font-size: 14px;
+}
+
 .receipt-header {
   text-align: center;
-  margin-bottom: 25px;
+  margin-top: -15px;
+  margin-bottom: 15px;
   font-family: "Trajan Pro"
+}
+
+.receipt-header > h1 {
+  margin-top: -5px;
+}
+
+.receipt-header > img {
+  object-fit: cover;
+  width: 300px;
+  height: 200px;
 }
 
 .items-table {
@@ -18,12 +33,12 @@ table.items-table, .items-table th, .items-table td {
 }
 
 .receipt-footer {
-  margin-top: 25px;
+  margin-top: 40px;
 }
 
 ul.chairs {
   list-style-type: none;
   padding-left:0;
-   margin-bottom: 2px;
+  margin-bottom: 2px;
 }
 

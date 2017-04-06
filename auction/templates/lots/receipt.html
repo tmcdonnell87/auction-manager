@@ -25,20 +25,20 @@
   {% for lot in view.lots %}
     <div class="lot">
       <div class="receipt-header">
-        <img src="{% static 'images/wa-logo.jpg' %}" width=300/>
+        <img src="{% static 'images/wa-logo.jpg' %}"/>
         <h1>{{ lot.lot }} - {{ lot.title }}</h1>
       </div>
       <div class="receipt-content">
-        <div>Congratulations on your purchase of auction lot #{{ lot.lot }}!</div>
+        <!--<div>Congratulations on your purchase of auction lot #{{ lot.lot }}!</div>-->
         {% if lot.description %}
         <p><i>{{ lot.description }}</i></p>
         {% endif %}
         <table class="items-table">
           <tr>
             <th>Package Items</th>
-            <th>Pick Up at Event</th>
-            <th>Redemption Name</th>
-            <th>Redemption Contact</th>
+            <th style="width: 90px;">Pick Up at Event</th>
+            <th style="width: 20%;">Contact</th>
+            <!--th>Redemption Contact</th>-->
           </tr>
           {% for item in lot.item_set.all %}
           <tr>
@@ -53,12 +53,16 @@
               {% endif %}
             </td>
             <td class="center">{{ item.onsite_pickup|yesno }}</td>
-            <td class="center">{{ item.contact_name }}</td>
-            <td class="center">{{ item.contact_point }}</td>
+            <td class="center">{{ item.contact_name }} ({{ item.contact_point }})</td>
+            <!--<td class="center">{{ item.contact_point }}</td>-->
           </tr>
           {% endfor %}
         </table>
       </div>
+      <p><b>Fair Market Value: </b>${{ lot.FMV }}</p>
+      {% if lot.pickup_instructions %}
+      <p><b>Redemption instructions: </b>{{ lot.pickup_instructions }}</p>
+      {% endif %}
       {% if lot.restrictions %}
       <p><b>Restrictions: </b>{{ lot.restrictions }}</p>
       {% endif %}

@@ -75,10 +75,6 @@ hr {
   padding: 10px;
   height: 100%;
   position: relative;
-  /* wkhtml no flexie
-  display: flex;
-  flex-direction: column;
-  */
 }
 
 .item-container {
@@ -90,8 +86,7 @@ hr {
 }
 
 
-.item-container > img {
-  margin-top: 10px;
+.item-container img {
   border: 2px solid black;
 }
 

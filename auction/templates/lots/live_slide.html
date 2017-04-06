@@ -24,59 +24,72 @@
   </head>
 
   <body>
-  {% for lot in view.lots %}
+    <div id="background">
+    {% for lot in view.lots %}
     <div class="lot">
-      <div class="layer">
-      <div class="lotMarker">
-          <div>Lot</div>
-          <div>{{ lot.lot }}</div>
+      <div class="header">
+        <div class="lot-number-display">
+          <div class="item-label">Item #</div>
+          <div class="lot-number">{{ lot.lot }}</div>
+        </div>
+        <h1 class="center title">{{lot.title}}</h1>
       </div>
-      <h1 class="center title">{{lot.title}}</h1>
       <hr>
-      <h1>{{ lot.short_desc }}</h2>
-      <div class="item-container">
-        <div class="item-description-column">
-        {% for item in lot.item_set.all %}
-          <div class="item-description">
-            <p>{{ item }}</p>
-            {% if item.wine_set %}
-              <!-- note:
-                this won't look good if wines are split into multiple items
-                as the table won't align
-                -->
-              <table class="wine-table">
-              {% for wine in item.wine_set.all %}
-                <tr>
-                  <td>{{wine.year}}</td>
-                  <td>
-                    {{wine.description}}
-                    {% if wine.rating %}
-                    <span> ({{wine.rating}})</span>
-                    {% endif %}
-                  </td>
-                  <td>{{wine.size}}<span> ({{wine.qty}})</td>
-                </tr>
-              {% endfor %}
-              </table>
-            {% endif %}
+      <div class="content">
+        <h2 class="hook">{{ lot.short_desc }}</h2>
+        <div class="item-container">
+          <div class="item-descriptions">
+          {% if lot.item_description_override %}
+          {{ lot.item_description_override | safe }}
+          {% else %}
+          <ul>
+          {% for item in lot.item_set.all %}
+            <li class="item-description">
+              <div class="item-title">{{ item }}</div>
+              {% if item.wine_set.exists %}
+                <!-- note:
+                  this won't look good if wines are split into multiple items
+                  as the table won't align
+                  -->
+                <table class="wine-table">
+                {% for wine in item.wine_set.all %}
+                  <tr>
+                    <td>{{wine.year}}</td>
+                    <td>
+                      {{wine.description}}
+                      {% if wine.rating %}
+                      <span> ({{wine.rating}})</span>
+                      {% endif %}
+                    </td>
+                    <td class="wine-qty">{{wine.size}}<span> ({{wine.qty}})</td>
+                  </tr>
+                {% endfor %}
+                </table>
+              {% endif %}
+            </li>
+          {% endfor %}
+          </ul>
+          {% endif %}
+          <div class="fmv">
+            <span>Fair Market Value: </span>
+            <span><b>${{lot.FMV}}</b></span>
           </div>
-        {% endfor %}
-        {% if lot.restrictions %}
-        <div class="restrictions">
-          <b>Restrictions: </b>{{lot.restrictions}}
-        </div>
-        {% endif %}
-        </div>
-        <div class="item-image-column">
-        {% if lot.image %}
-          <img src="{{ lot.image.url }}">
-        {% endif %}
+          </div>
+          {% if lot.image %}
+          <img width=250 src="{{ lot.image.url }}">
+          {% endif %}
         </div>
       </div>
-        <!--
-        <img class="guardsmen-brand" src="{% static 'images/guardsmen-logo-clear.png' %}" />
-        -->
+      <div class="footer">
+        <div class="restrictions">
+          {% if lot.restrictions %}
+          <b>Restrictions: </b>{{lot.restrictions}}
+          {% endif %}
+        </div>
+        <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" />
+      </div>
     </div>
-  {% endfor %}
+    {% endfor %}
+  </div>
   </body>
 </html>

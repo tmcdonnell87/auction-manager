@@ -46,6 +46,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
     list_filter = ('type', )
     search_fields = ['lot', 'title', 'short_desc']
     list_editable = ('FMV', 'predicted_sale', 'confirmed', 'reviewed', 'received', 'complete')
+    ordering = ('lot', )
 
 class WineAdmin(admin.ModelAdmin):
     list_display = ('item', 'year', 'description', 'size', 'qty', 'rating', 'confirmed')

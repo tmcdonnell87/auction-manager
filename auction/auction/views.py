@@ -38,8 +38,7 @@ class LotSlideListView(TemplateView):
         if 'lot' in self.request.GET:
             qs = qs.filter(lot__in=self.request.GET['lot'].split(','))
         else:
-            qs = qs.all()
-        qs = qs.filter(lot__lt=1000)
+            qs = qs.filter(type='L')
         qs = qs.order_by('lot')
         return qs
 
@@ -50,9 +49,8 @@ class LotSilentListView(TemplateView):
         if 'lot' in self.request.GET:
             qs = qs.filter(lot__in=self.request.GET['lot'].split(','))
         else:
-            qs = qs.all()
+            qs = qs.filter(type='S')
         qs = qs.filter(lot__lt=1000)
-        qs.filter(type='S')
         qs = qs.order_by('lot')
         return qs
 
@@ -85,6 +83,7 @@ class LotSlidePDFView(PDFTemplateView, LotSlideListView):
         'margin-left': 0,
         'margin-right': 0,
         'margin-bottom': 0,
+        'quiet': None,
         'page-width': '13.33in',
         'page-height': '7.5in',
         'print-media-type': True,

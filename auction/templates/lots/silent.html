@@ -36,47 +36,49 @@
       </div>
       <hr>
       <div class="content">
-        {% if lot.image %}
-        <img width=250 src="{{ lot.image.url }}">
-        {% endif %}
         <h2>{{ lot.short_desc }}</h2>
         <div class="item-container">
-          <ul class="item-descriptions">
-          {% for item in lot.item_set.all %}
-            <li class="item-description">
-              <div class="item-title">{{ item }}</div>
-              {% if item.wine_set.exists %}
-                <!-- note:
-                  this won't look good if wines are split into multiple items
-                  as the table won't align
-                  -->
-                <table class="wine-table">
-                {% for wine in item.wine_set.all %}
-                  <tr>
-                    <td>{{wine.year}}</td>
-                    <td>
-                      {{wine.description}}
-                      {% if wine.rating %}
-                      <span> ({{wine.rating}})</span>
-                      {% endif %}
-                    </td>
-                    <td>{{wine.size}}<span> ({{wine.qty}})</td>
-                  </tr>
-                {% endfor %}
-                </table>
-              {% endif %}
-            </li>
-          {% endfor %}
-          </ul>
-          <div class="lot-description">
-            {{ lot.description | linebreaks }}
+          <div class="item-descriptions">
+            <ul>
+            {% for item in lot.item_set.all %}
+              <li class="item-description">
+                <div class="item-title">{{ item }}</div>
+                {% if item.wine_set.exists %}
+                  <!-- note:
+                    this won't look good if wines are split into multiple items
+                    as the table won't align
+                    -->
+                  <table class="wine-table">
+                  {% for wine in item.wine_set.all %}
+                    <tr>
+                      <td>{{wine.year}}</td>
+                      <td>
+                        {{wine.description}}
+                        {% if wine.rating %}
+                        <span> ({{wine.rating}})</span>
+                        {% endif %}
+                      </td>
+                      <td>{{wine.size}}<span> ({{wine.qty}})</td>
+                    </tr>
+                  {% endfor %}
+                  </table>
+                {% endif %}
+              </li>
+            {% endfor %}
+            </ul>
           </div>
-          {% if lot.restrictions %}
-          <div class="restrictions">
-            <b>Restrictions: </b>{{lot.restrictions}}
-          </div>
+          {% if lot.image %}
+          <img width=250 src="{{ lot.image.url }}">
           {% endif %}
         </div>
+        <div class="lot-description">
+          {{ lot.description | linebreaks }}
+        </div>
+        {% if lot.restrictions %}
+        <div class="restrictions">
+          <b>Restrictions: </b>{{lot.restrictions}}
+        </div>
+        {% endif %}
       </div>
       <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" />
     </div>

@@ -30,6 +30,7 @@
 .header {
   font-family: "Trajan Pro";
   display: table;
+  width: 100%;
 }
 
 .lot-number-display {

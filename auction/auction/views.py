@@ -61,6 +61,11 @@ class LotPreviewEmailView(TemplateView):
 
 class LotReceiptPDFView(PDFTemplateView, LotReceiptListView):
     template_name = 'lots/receipt.html'
+    cmd_options = {
+        'disable-smart-shrinking': True,
+        'page-size': 'Letter',
+        'disable-javascript': True
+    }
     filename = None
 
 class LotPreviewEmailPDFView(PDFTemplateView, LotPreviewEmailView):

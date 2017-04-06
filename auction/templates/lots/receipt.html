@@ -31,7 +31,7 @@
       <div class="receipt-content">
         <!--<div>Congratulations on your purchase of auction lot #{{ lot.lot }}!</div>-->
         {% if lot.description %}
-        <p><i>{{ lot.description }}</i></p>
+        <p><i>{{ lot.description | linebreaks }}</i></p>
         {% endif %}
         <table class="items-table">
           <tr>
@@ -52,7 +52,7 @@
                 </ul>
               {% endif %}
             </td>
-            <td class="center">{{ item.onsite_pickup|yesno }}</td>
+            <td class="center">{{ item.onsite_pickup|yesno:"Yes,No" }}</td>
             <td class="center">{{ item.contact_name }} ({{ item.contact_point }})</td>
             <!--<td class="center">{{ item.contact_point }}</td>-->
           </tr>

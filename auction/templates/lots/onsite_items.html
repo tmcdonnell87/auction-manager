@@ -1,0 +1,80 @@
+{% load staticfiles i18n %}<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}Guardsmen Auction Manager{% endblock title %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <![endif]-->
+
+    {% block css %}
+    <link href="{% static 'css/items.css' %}" rel="stylesheet">
+    <!-- This file stores project-specific CSS -->
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+    {% endblock %}
+  </head>
+
+  <body>
+  {% for lot in view.lots %}
+    <div class="lot">
+      <div class="header center">
+        <h1 class="item-number">{{ lot.lot }}</h1>
+        <h2>{{ lot.title }}</h2>
+      </div>
+      <div class="content">
+        <div class="item-descriptions">
+          <h3>Onsite Pickup</h3>
+          <ul>
+          {% for item in lot.item_set.all %}
+            {% if item.onsite_pickup %}
+            <li class="item-description">
+              <div class="item-title">{{ item }}</div>
+              {% if item.wine_set.exists %}
+                <!-- note:
+                  this won't look good if wines are split into multiple items
+                  as the table won't align
+                  -->
+                <table class="wine-table">
+                {% for wine in item.wine_set.all %}
+                  <tr>
+                    <td>{{wine.year}}</td>
+                    <td>
+                      {{wine.description}}
+                      {% if wine.rating %}
+                      <span> ({{wine.rating}})</span>
+                      {% endif %}
+                    </td>
+                    <td>{{wine.size}}<span> ({{wine.qty}})</td>
+                  </tr>
+                {% endfor %}
+                </table>
+              {% endif %}
+            </li>
+            {% endif %}
+          {% endfor %}
+          </ul>
+          <h3>Other Items</h3>
+          {% if lot.pickup_instructions %}
+          <p><b>Redemption instructions: </b>{{ lot.pickup_instructions }}</p>
+          {% endif %}
+          <ul>
+          {% for item in lot.item_set.all %}
+            {% if not item.onsite_pickup %}
+            <li class="item-description">
+              <div class="item-title">{{ item }} - {{ item.contact_name }} ({{ item.contact_point }})</div>
+            </li>
+            {% endif %}
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
+    <div>
+  {% endfor %}
+  </body>
+</html>

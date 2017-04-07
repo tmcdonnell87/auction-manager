@@ -24,24 +24,24 @@
 .lot {
   position: relative;
   padding: 20px;
-  height: 938px;
+  height: 935px;
 }
 
 .header {
   font-family: "Trajan Pro";
-  display: table;
+  display: flex;
   width: 100%;
+  vertical-align: center;
 }
 
 .lot-number-display {
-  width: 150px;
+  width: 100px;
   text-align: center;
-  display: table-cell;
 }
 
 .lot-number-display > .item-label {
   background-color: rgb(0, 65, 51);
-  width: 100%;
+  min-width: 100px;
   font-size: 1.5em;
   color: white;
   padding: 3px;
@@ -52,7 +52,7 @@
   color: rgb(0, 65, 51);
   font-size: 1.5em;
   padding: 3px;
-  width: 100%;
+  width: 100px;
   text-align: center;
   border: rgb(0, 65, 51) 2px solid;
 }
@@ -61,7 +61,8 @@
   font-size: 2.3em;
   /* 150 (lot marker) + 30 (lot offset) + 30 (padding) */
   padding-left: 20px;
-  display: table-cell;
+  flex-grow: 10;
+  margin: 0;
 }
 
 hr {
@@ -73,7 +74,6 @@ hr {
 
 .content {
   padding: 10px;
-  height: 100%;
   position: relative;
 }
 
@@ -81,13 +81,29 @@ hr {
   display: flex;
 }
 
+.item-descriptions > ul {
+  padding-left: 20px;
+}
+
 .item-descriptions {
   flex-grow: 10;
 }
 
+.item-container .lot-img {
+  vertical-align: middle;
+  margin-left: 10px;
+}
 
 .item-container img {
   border: 2px solid black;
+  position: relative;
+  top: 50%;
+  width: 2.25in;
+  transform: perspective(1px) translateY(-50%);
+}
+
+.wine-table td {
+  padding: 0px 2px;
 }
 
 .guardsmen-brand {
@@ -113,12 +129,11 @@ hr {
   font-size: 1.2em;
 }
 
-
 .restrictions {
   padding-top: 20px;
 }
 
 .lot-description {
-  padding: 10px 15px 0 15px;
+  margin-top: 40px;
   font-style: italic;
 }

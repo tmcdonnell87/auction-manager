@@ -32,6 +32,11 @@ urlpatterns = [
         name='silent'
     ),
     url(
+        regex=r'^items$',
+        view=views.LotOnsiteItemsListView.as_view(),
+        name='items'
+    ),
+    url(
         regex=r'^email$',
         view=views.LotPreviewEmailView.as_view(),
         name='preview-email'

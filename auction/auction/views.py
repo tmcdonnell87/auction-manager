@@ -54,6 +54,18 @@ class LotSilentListView(TemplateView):
         qs = qs.order_by('lot')
         return qs
 
+class LotOnsiteItemsListView(TemplateView):
+    template_name = 'lots/onsite_items.html'
+    def lots(self):
+        qs = Lot.objects
+        if 'lot' in self.request.GET:
+            qs = qs.filter(lot__in=self.request.GET['lot'].split(','))
+        else:
+            qs = qs.all()
+        qs = qs.filter(lot__lt=1000)
+        qs = qs.order_by('lot')
+        return qs
+
 class LotPreviewEmailView(TemplateView):
     template_name = 'lots/preview_email.html'
     def lots(self):

@@ -58,7 +58,7 @@
                         <span> ({{wine.rating}})</span>
                         {% endif %}
                       </td>
-                      <td>{{wine.size}}<span> ({{wine.qty}})</td>
+                      <td style="min-width: 80px">{{wine.size}}<span> ({{wine.qty}})</td>
                     </tr>
                   {% endfor %}
                   </table>
@@ -68,19 +68,19 @@
             </ul>
           </div>
           {% if lot.image %}
-          <div>
-            <img width=250 src="{{ lot.image.url }}">
+          <div class="lot-img">
+            <img src="{{ lot.image.url }}">
           </div>
           {% endif %}
-        </div>
-        <div class="lot-description">
-          {{ lot.description | linebreaks }}
         </div>
         {% if lot.restrictions %}
         <div class="restrictions">
           <b>Restrictions: </b>{{lot.restrictions}}
         </div>
         {% endif %}
+        <div class="lot-description">
+          {{ lot.description | linebreaks }}
+        </div>
       </div>
       <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" />
     </div>

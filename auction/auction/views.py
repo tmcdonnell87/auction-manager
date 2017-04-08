@@ -128,7 +128,7 @@ def LotBidPalListView(request):
             lot.start_bid,
             lot.min_raise,
             lot.get_type_display(),
-            lot.cost
+            lot.tax
         ])
     return response
 

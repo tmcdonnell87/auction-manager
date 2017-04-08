@@ -33,7 +33,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
             'fields': ('pickup_instructions', 'item_description_override',)
         }),
         ('Financial', {
-            'fields': ('FMV', 'predicted_sale', 'cost', 'start_bid', 'min_raise',)
+            'fields': ('FMV', 'predicted_sale', 'cost', 'tax', 'start_bid', 'min_raise',)
         }),
         ('Review', {
             'fields': ('complete', 'reviewed', 'received', 'confirmed',)
@@ -42,10 +42,10 @@ class LotAdmin(nested_admin.NestedModelAdmin):
             'fields': ('notes',)
         }),
     )
-    list_display = ('lot', 'type', 'title', 'FMV', 'cost', 'category', 'complete', 'reviewed', 'received', 'confirmed')
+    list_display = ('lot', 'type', 'title', 'FMV', 'tax', 'category', 'complete', 'reviewed', 'received', 'confirmed')
     list_filter = ('type', 'category')
     search_fields = ['lot', 'title', 'short_desc']
-    list_editable = ('FMV', 'cost', 'category', 'confirmed', 'reviewed', 'received', 'complete')
+    list_editable = ('FMV', 'tax', 'category', 'confirmed', 'reviewed', 'received', 'complete')
     ordering = ('lot', )
 
 class WineAdmin(admin.ModelAdmin):

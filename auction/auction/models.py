@@ -77,6 +77,9 @@ class Lot(models.Model):
         blank=True,
         help_text='A text description of the items to override the default'
     )
+    tax = models.FloatField(
+        default=1
+    )
     def image_thumbnail(self):
         return mark_safe('<img src="/uploads/%s" width="50" height="5-" />' % (self.image))
     image_thumbnail.short_description = 'Preview'

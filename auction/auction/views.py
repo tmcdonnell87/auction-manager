@@ -114,11 +114,10 @@ def LotBidPalListView(request):
     if 'lot' in request.GET:
         qs = qs.filter(lot__in=request.GET['lot'].split(','))
     else:
-        qs = qs.all()
-    qs = qs.filter(lot__lt=1000)
+        qs = qs.filter(confirmed=True)
     lots = qs.order_by('lot', 'category')
     writer = csv.writer(response)
-    writer.writerow(['Lot', 'Title', 'Category', 'Description', 'Value', 'Start Bid', 'Min Raise', 'Type'])
+    writer.writerow(['Lot', 'Title', 'Category', 'Description', 'Value', 'Start Bid', 'Min Raise', 'Type', 'Tax'])
     for lot in lots:
         writer.writerow([
             lot.lot,
@@ -128,7 +127,8 @@ def LotBidPalListView(request):
             lot.FMV,
             lot.start_bid,
             lot.min_raise,
-            lot.get_type_display()
+            lot.get_type_display(),
+            lot.cost
         ])
     return response
 

@@ -42,10 +42,10 @@ class LotAdmin(nested_admin.NestedModelAdmin):
             'fields': ('notes',)
         }),
     )
-    list_display = ('lot', 'type', 'title', 'FMV', 'category', 'complete', 'reviewed', 'received', 'confirmed')
+    list_display = ('lot', 'type', 'title', 'FMV', 'cost', 'category', 'complete', 'reviewed', 'received', 'confirmed')
     list_filter = ('type', 'category')
     search_fields = ['lot', 'title', 'short_desc']
-    list_editable = ('FMV', 'category', 'confirmed', 'reviewed', 'received', 'complete')
+    list_editable = ('FMV', 'cost', 'category', 'confirmed', 'reviewed', 'received', 'complete')
     ordering = ('lot', )
 
 class WineAdmin(admin.ModelAdmin):

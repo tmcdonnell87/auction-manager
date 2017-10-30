@@ -30,6 +30,10 @@ if READ_DOT_ENV_FILE:
 # APP CONFIGURATION
 # ------------------------------------------------------------------------------
 DJANGO_APPS = [
+    # Django suit for admin UI
+    'nested_admin',
+    'suit',
+
     # Default Django apps:
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,9 +50,9 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     'crispy_forms',  # Form layouts
-    'allauth',  # registration
-    'allauth.account',  # registration
-    'allauth.socialaccount',  # registration
+    #'allauth',  # registration
+    #'allauth.account',  # registration
+    #'allauth.socialaccount',  # registration
 ]
 
 # Apps specific for this project go here.
@@ -56,6 +60,7 @@ LOCAL_APPS = [
     # custom users app
     'auction.users.apps.UsersConfig',
     # Your stuff: custom apps go here
+    'auction.auction.apps.AuctionConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -111,7 +116,7 @@ MANAGERS = ADMINS
 # Uses django-environ to accept uri format
 # See: https://django-environ.readthedocs.io/en/latest/#supported-types
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgres:///auction'),
+    'default': env.db('DATABASE_URL', default='postgres://auction@127.0.0.1/auction'),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -256,7 +261,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', False)
 ACCOUNT_ADAPTER = 'auction.users.adapters.AccountAdapter'
-SOCIALACCOUNT_ADAPTER = 'auction.users.adapters.SocialAccountAdapter'
+#SOCIALACCOUNT_ADAPTER = 'auction.users.adapters.SocialAccountAdapter'
 
 # Custom user app defaults
 # Select the correct user model
@@ -273,3 +278,16 @@ ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
+WUFOO_API_KEY = env('WUFOO_API_KEY')
+SUIT_CONFIG = {
+    'SEARCH_URL': '/admin/auction/lot/',
+    'ADMIN_NAME': 'Guardsmen Auctions',
+    'SHOW_REQUIRED_ASTERISK': True,
+    'CONFIRM_UNSAVED_CHANGES': True,
+    'MENU_OPEN_FIRST_CHILD': True,
+    'MENU': (
+        'auction',
+        '-',
+    )
+
+}

@@ -48,3 +48,8 @@ redis>=2.10.5
 
 
 # Your custom requirements go here
+django-suit==0.2.24
+django-nested-admin==3.0.20
+git+https://github.com/wufoo/pyfoo.git#egg=pyfoo
+# django-wkhtmltopdf==3.1.0
+# django-grappelli==2.9.1

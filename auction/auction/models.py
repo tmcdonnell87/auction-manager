@@ -44,7 +44,7 @@ class Auction(models.Model):
     )
     date = models.DateField()
     contact_email = models.EmailField(max_length=255)
-    main_image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(upload_to='uploads/auction/', null=True, blank=True)
     donation_form = models.ForeignKey(
         DonationForm,
         null=True,
@@ -94,13 +94,17 @@ class Lot(models.Model):
     )
     WINE = 'W'
     GOLF = 'G'
+    SPORTS = 'S'
+    RESTAURANT = 'R'
     EXPERIENCE = 'E'
     OTHER = 'O'
-    SUPERSILENT = 'S'
+    SUPERSILENT = 'X'
     category = models.CharField(
         choices=(
             (WINE, 'Wine'),
             (GOLF, 'Golf'),
+            (RESTAURANT, 'Restaurants'),
+            (SPORTS, 'Sports'),
             (EXPERIENCE, 'Experiences'),
             (OTHER, 'Other'),
             (SUPERSILENT, 'Super Silent')
@@ -120,7 +124,7 @@ class Lot(models.Model):
         help_text='A long description suitable for printed text (e.g. website, program)'
     )
     restrictions = models.CharField(blank=True, max_length=140)
-    image = models.ImageField(upload_to='uploads/', null=True, blank=True)
+    image = models.ImageField(upload_to='uploads/lot/', null=True, blank=True)
     FMV = models.PositiveIntegerField(null=True)
     pickup_instructions = models.TextField(
         blank=True,
@@ -163,7 +167,7 @@ class Lot(models.Model):
     )
 
     def image_thumbnail(self):
-        return mark_safe('<img src="/uploads/%s" width="50" height="50" />' % (self.image))
+        return mark_safe('<img src="/uploads/lot/%s" width="50" height="50" />' % (self.image))
     image_thumbnail.short_description = 'Preview'
     image_thumbnail.allow_tags = True
     def __str__(self):
@@ -171,6 +175,21 @@ class Lot(models.Model):
     class Meta:
         unique_together = (("auction", "lot_number"),)
 
+
+DONATION_TYPES = (
+    ('O', 'Other'),
+    ('W', 'Wine'),
+    ('G', 'Golf'),
+    ('L', 'Beer, Liquor (non-wine)'),
+    ('ST', 'Sports, Tickets'),
+    ('SG', 'Sports, Memorabilia, Giants'),
+    ('S4', 'Sports, Memorabilia, 49ers'),
+    ('SC', 'Sports, Memorabilia, Cal/Stanford'),
+    ('SC', 'Sports, Memorabilia, Other'),
+    ('EV', 'Experiences, Vacation'),
+    ('EL', 'Experiences, Local'),
+    ('R', 'Restaurant'),
+)
 class Donation(models.Model):
     auction = models.ForeignKey(
         Auction,
@@ -249,10 +268,20 @@ class Donation(models.Model):
     active = models.BooleanField(
         default=True,
     )
+    image_upload_link = models.URLField(
+        null=True,
+        blank=True,
+    )
+    image = models.ImageField(upload_to='uploads/donation/', null=True, blank=True)
     inactive_reason = models.CharField(
         max_length=255,
         null=True,
         blank=True
+    )
+    category = models.CharField(
+        choices=DONATION_TYPES,
+        default='O',
+        max_length=2
     )
 
     def __str__(self):

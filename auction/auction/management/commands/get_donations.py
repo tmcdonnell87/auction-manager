@@ -1,13 +1,17 @@
 import datetime
 import os
+import re
+#import urllib
 from pytz import timezone
 from django.core.management.base import BaseCommand
 from django.conf import settings
+#from django.core.files import File
+#from django.core.files.temp import NamedTemporaryFile
 from pyfoo import PyfooAPI
+
 
 from ...models import (
     Auction,
-    DonationForm,
     Donation
 )
 class Command(BaseCommand):
@@ -81,9 +85,17 @@ class Command(BaseCommand):
                 if donation_form.auction_provide_contact_field:
                     auction_contact_type = entry['Field{}'.format(donation_form.auction_provide_contact_field)]
                     if 'above' in auction_contact_type:
-                        auction_contact_point = donor_name + ' (' + donor_email + ')'
+                        auction_contact_point = (donor_name or donor_organization) + ' (' + donor_email + ')'
                     elif donation_form.auction_contact_point_field and entry['Field{}'.format(donation_form.auction_contact_point_field)]:
                         auction_contact_point = entry['Field{}'.format(donation_form.auction_contact_point_field)]
+                                # logo_field = None
+                logo_url = None
+                if donation_form.logo_field:
+                    logo_str = entry['Field{}'.format(donation_form.logo_field)]
+                    match = re.search(r'(.+) \((.+)\)', logo_str)
+                    if match:
+                        # logo_name = match.group(1)
+                        logo_url = match.group(2)
                 donation.donor_organization = donor_organization
                 donation.donor_name = donor_name
                 donation.donor_email = donor_email
@@ -98,4 +110,5 @@ class Command(BaseCommand):
                 donation.auction_contact_point = auction_contact_point
                 donation.form_created_time = form_created_time
                 donation.form_updated_time = form_updated_time
+                donation.image_upload_link = logo_url
                 donation.save()

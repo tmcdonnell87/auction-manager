@@ -34,6 +34,7 @@ class AuctionAdmin(admin.ModelAdmin):
 class DonationAdmin(admin.ModelAdmin):
     list_display = (
         'auction',
+        'category',
         'donor_organization',
         'donor_name',
         'donor_email',
@@ -45,14 +46,15 @@ class DonationAdmin(admin.ModelAdmin):
         'active',
         'inactive_reason'
     )
-    list_filter = ('auction', 'active')
+    list_editable = ('category',)
+    list_filter = ('auction', 'active', 'category', )
     inlines = (ItemInline, )
     fieldsets = (
         ('Main',{
-            'fields': ('auction', 'source_form', 'form_entry_number')
+            'fields': ('auction', 'source_form', 'form_entry_number', 'category')
         }),
         ('Donor', {
-            'fields': ('donor_organization', 'donor_name', 'donor_email', 'donor_phone', 'donor_address')
+            'fields': ('donor_organization', 'donor_name', 'donor_email', 'donor_phone', 'donor_address', 'image_upload_link', 'image')
         }),
         ('Auction', {
             'fields': ('auction_items', 'auction_description', 'auction_value', 'auction_contact_point', 'delivery_method', 'special_instructions')

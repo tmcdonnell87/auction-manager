@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 class DonationForm(models.Model):
     name = models.CharField(max_length=255)
@@ -49,6 +49,7 @@ class Auction(models.Model):
         DonationForm,
         null=True,
         blank=True,
+        on_delete=models.CASCADE,
         help_text='The donation form associated with the auction'
     )
     chairmen = models.ManyToManyField(
@@ -58,6 +59,7 @@ class Auction(models.Model):
     auction_primary = models.ForeignKey(
         'users.User',
         null=True,
+        on_delete=models.SET_NULL,
         related_name='+',
         help_text='Person to list on the auction receipt as follow-up contact for any issues'
     )
@@ -81,6 +83,7 @@ class Auction(models.Model):
 class Lot(models.Model):
     auction = models.ForeignKey(
         Auction,
+        on_delete=models.PROTECT,
         help_text='The auction this lot is associated with'
     )
     lot_number = models.PositiveSmallIntegerField(unique=True, db_index=True)
@@ -193,10 +196,12 @@ DONATION_TYPES = (
 class Donation(models.Model):
     auction = models.ForeignKey(
         Auction,
+        on_delete=models.PROTECT,
         help_text='The auction currently associated with the donation'
     )
     source_form = models.ForeignKey(
         DonationForm,
+        on_delete=models.PROTECT,
         null=True,
         help_text='The donation form'
     )
@@ -283,7 +288,26 @@ class Donation(models.Model):
         default='O',
         max_length=2
     )
-
+    assigned_to_lots = models.ManyToManyField(
+        Lot,
+        blank=True,
+    )
+    complete = models.BooleanField(
+        default=False,
+        help_text='Whether this donation has been received and assigned'
+    )
+    def donation_actions(self):
+        return mark_safe(
+            format_html(
+                #'<a class="btn related-widget-wrapper-link" href="{lot_ref}?from_donation={id}&_popup=1" target="_blank">Create Lot</a>&nbsp;'
+                '<a class="btn related-widget-wrapper-link" href="{item_ref}?from_donation={id}&_popup=1">Create Item</a>&nbsp;',
+                lot_ref=reverse('admin:auction_lot_add'),
+                item_ref=reverse('admin:auction_item_add'),
+                id=self.id,
+            )
+        )
+    donation_actions.short_description = 'Donation Actions'
+    donation_actions.allow_tags = True
     def __str__(self):
         return self.auction.abbr + ' - ' + str(self.form_entry_number) + ' - ' + self.donor_organization
     class Meta:
@@ -300,12 +324,14 @@ class Item(models.Model):
         Lot,
         null=True,
         blank=True,
+        on_delete=models.PROTECT,
     )
     donation = models.ForeignKey(
         Donation,
         null=True,
         blank=True,
-        help_text='The donation form submitted for this item'
+        help_text='The donation form submitted for this item',
+        on_delete=models.PROTECT,
     )
     description = models.CharField(
         max_length=140,

@@ -1,8 +1,12 @@
+import math
 from django.contrib import admin
 from django.db import models
-from django.forms import Textarea
-#from django.utils.html import format_html
-#from django.core.urlresolvers import reverse
+from django.forms import Textarea, ModelForm, SelectMultiple
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils.safestring import mark_safe
+from django.utils.html import format_html_join
+from django.core.urlresolvers import resolve, reverse
+
 import nested_admin
 from .models import (
     Lot,
@@ -13,14 +17,85 @@ from .models import (
     Auction
 )
 
+
+class PrepopulatedRelatedFieldWidgetWrapper(admin.widgets.RelatedFieldWidgetWrapper):
+    def __init__(self, widget, rel, admin_site, source, **kwargs):
+        super(PrepopulatedRelatedFieldWidgetWrapper, self).__init__(widget, rel, admin_site, **kwargs)
+        self.source = source
+
+    def get_context(self, name, value, attrs):
+        context = super(PrepopulatedRelatedFieldWidgetWrapper, self).get_context(name, value, attrs)
+        url_params = (context['url_params'] + '&' + self.source) if context.get('url_params') else self.source
+        context.update(url_params=url_params)
+        return context
+
+
+class DonationAdminForm(ModelForm):
+    class Meta:
+        model = Donation
+        fields = ['assigned_to_lots']
+
+    def __init__(self, *args, **kwargs):
+        super(DonationAdminForm, self).__init__(*args, **kwargs)
+        self.fields['assigned_to_lots'].widget = PrepopulatedRelatedFieldWidgetWrapper(
+            SelectMultiple(),
+            Donation._meta.get_field('assigned_to_lots').rel,
+            self.admin_site,
+            'from_donation={id}'.format(id=self.instance.id)
+        )
+        self.fields['assigned_to_lots'].queryset = Lot.objects.filter(
+            auction_id=self.instance.auction.id)
+
+
+class ItemForm(ModelForm):
+    class Meta:
+        model = Item
+        exclude = []
+
+    def __init__(self, *args, **kwargs):
+        super(ItemForm, self).__init__(*args, **kwargs)
+        lot_query = None
+        if self.instance.donation:
+            donation = self.instance.donation
+            lots = [lot.id for lot in donation.assigned_to_lots.all()]
+            if lots:
+                lot_query = Lot.objects.filter(pk__in=lots)
+            elif donation.auction:
+                lot_query = Lot.objects.filter(auction_id=donation.auction.id)
+        if not lot_query:
+            lot_query = Lot.objects.all()
+        self.fields['lot'].queryset = lot_query
+
 class WineInline(nested_admin.NestedTabularInline):
     model = Wine
     extra = 0
 
-class ItemInline(nested_admin.NestedStackedInline):
+class LotItemInline(nested_admin.NestedStackedInline):
     model = Item
     extra = 0
     inlines = [WineInline,]
+
+
+class DonationItemInline(nested_admin.NestedStackedInline):
+    model = Item
+    inlines = [WineInline,]
+    extra = 0
+    template = 'stacked_inline.html'
+    form = ItemForm
+    """
+    formset = ItemFormset
+
+    def get_parent_object_from_request(self, request):
+        resolved = resolve(request.path_info)
+        if resolved.args:
+            return self.parent_model.objects.get(pk=resolved.args[0])
+        return None
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super(DonationItemInline, self).get_formset(request, obj, **kwargs)
+        formset.donation = self.get_parent_object_from_request(request)
+        return formset
+    """
 
 class DonationFormAdmin(admin.ModelAdmin):
     pass
@@ -31,7 +106,22 @@ class AuctionAdmin(admin.ModelAdmin):
     )
     list_display = ('name', 'date', 'auction_actions',)
 
-class DonationAdmin(admin.ModelAdmin):
+class DonationAdmin(nested_admin.NestedModelAdmin):
+    def __init__(self, model, admin_site):
+        super(DonationAdmin,self).__init__(model, admin_site)
+        self.form.admin_site = admin_site # capture the admin_site
+
+    def associated_lots(self, obj):
+        return mark_safe(
+            format_html_join(
+                '\n', '<a href="{}" target="_blank">{}</a>',
+                ((reverse('admin:auction_lot_change', args=[lot.id]), lot.lot_number) for lot in obj.assigned_to_lots.all())
+            )
+        )
+
+    inlines = [
+        DonationItemInline,
+    ]
     list_display = (
         'auction',
         'category',
@@ -43,14 +133,17 @@ class DonationAdmin(admin.ModelAdmin):
         'guardsmen_contact',
         'auction_value',
         'auction_items',
+        'associated_lots',
         'active',
         'inactive_reason'
     )
     list_editable = ('category',)
     list_filter = ('auction', 'active', 'category', )
-    inlines = (ItemInline, )
+    readonly_fields = (
+        'donation_actions',
+    )
     fieldsets = (
-        ('Main',{
+        ('Main', {
             'fields': ('auction', 'source_form', 'form_entry_number', 'category')
         }),
         ('Donor', {
@@ -58,6 +151,9 @@ class DonationAdmin(admin.ModelAdmin):
         }),
         ('Auction', {
             'fields': ('auction_items', 'auction_description', 'auction_value', 'auction_contact_point', 'delivery_method', 'special_instructions')
+        }),
+        ('Actions', {
+            'fields': ('donation_actions', 'assigned_to_lots',)
         }),
         ('Admin', {
             'fields': ('active', 'inactive_reason')
@@ -67,10 +163,12 @@ class DonationAdmin(admin.ModelAdmin):
         }),
     )
     search_fields = ['donor_name', 'donor_organization', 'auction_items']
+    form = DonationAdminForm
+
 
 class LotAdmin(nested_admin.NestedModelAdmin):
     inlines = [
-        ItemInline,
+        LotItemInline,
     ]
     formfield_overrides = {
         models.TextField: {'widget': Textarea(attrs={'cols': 80})},
@@ -103,6 +201,65 @@ class LotAdmin(nested_admin.NestedModelAdmin):
     list_editable = ('lot_number', 'title', 'type', 'category', 'FMV')
     ordering = ('lot_number', )
 
+    def get_changeform_initial_data(self, request):
+        def get_starting_bid(FMV):
+            if not FMV:
+                return 0
+            base = FMV * 0.4
+            if base < 100:
+                return int(math.ceil(base / 10)) * 10
+            if base < 200:
+                return int(math.ceil(base / 20)) * 20
+            if base < 500:
+                return int(math.ceil(base / 50)) * 50
+            else:
+                return int(math.ceil(base / 50)) * 50
+        def get_min_raise(FMV):
+            if not FMV:
+                return 0
+            base = FMV * 0.1
+            if base < 200:
+                return 10
+            if base < 200:
+                return 20
+            if base < 500:
+                return 50
+            else:
+                return 100
+
+        if request.GET.get('from_donation'):
+            donation_id = request.GET['from_donation']
+            donation = Donation.objects.get(pk=donation_id)
+            category = donation.category[0] if donation.auction_value < 1200 else 'X'
+            lot_number = None
+            try:
+                lot_number = Lot.objects.filter(category=category, auction_id=donation.auction.id).latest('lot_number').lot_number + 1
+                if Lot.objects.get(lot_number=lot_number):
+                    lot_number = None
+                    raise ObjectDoesNotExist
+            except ObjectDoesNotExist:
+                if not lot_number:
+                    try:
+                        lot_number = Lot.objects.filter(auction=donation.auction).latest('lot_number').lot_number + 1
+                    except ObjectDoesNotExist:
+                        lot_number = 101
+            initial_data = {
+                'auction': donation.auction,
+                'lot_number': lot_number,
+                'category': category,
+                'title': donation.donor_organization,
+                'description': donation.auction_description,
+                'short_desc': donation.auction_items,
+                'FMV': donation.auction_value,
+                'start_bid': get_starting_bid(donation.auction_value),
+                'min_raise': get_min_raise(donation.auction_value),
+                'notes': donation.special_instructions,
+                'auction_contact_point': donation.auction_contact_point or donation.auction.auction_primary.name,
+            }
+        else:
+            initial_data = super().get_changeform_initial_data(request)
+        return initial_data
+
 class WineAdmin(admin.ModelAdmin):
     list_display = ('item', 'year', 'description', 'size', 'qty', 'rating', 'confirmed')
     search_fields = ('year', 'description', 'item__title', 'lot__title')
@@ -129,6 +286,37 @@ class ItemAdmin(admin.ModelAdmin):
         'location',
         'location_notes'
     )
+    def get_changeform_initial_data(self, request):
+
+        if request.GET.get('from_donation'):
+            donation_id = request.GET['from_donation']
+            donation = Donation.objects.get(pk=donation_id)
+            # location
+            if 'SF Wine Center' in donation.delivery_method:
+                location = 'SFWC'
+            elif 'Guardsmen Office' in donation.delivery_method:
+                location = 'OFFICE'
+            else:
+                location = 'OTHER'
+            # contact point
+            if donation.auction_contact_point:
+                contact_point = donation.auction_contact_point
+                contact_name = None
+            else:
+                contact_point = donation.auction.contact_email
+                contact_name = donation.auction.auction_primary.name
+            initial_data = {
+                'donation': donation,
+                'description': donation.auction_items,
+                'contact_name': contact_name,
+                'contact_point': contact_point,
+                'location': location,
+                'item_notes': donation.special_instructions,
+            }
+        else:
+            initial_data = super().get_changeform_initial_data(request)
+        return initial_data
+
 
 admin.site.register(Lot, LotAdmin)
 admin.site.register(Wine, WineAdmin)

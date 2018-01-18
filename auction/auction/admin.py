@@ -38,7 +38,10 @@ class DonationAdminForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DonationAdminForm, self).__init__(*args, **kwargs)
         self.fields['assigned_to_lots'].widget = PrepopulatedRelatedFieldWidgetWrapper(
-            SelectMultiple(),
+            admin.widgets.FilteredSelectMultiple(
+                'Items',
+                is_stacked=False,
+            ),
             Donation._meta.get_field('assigned_to_lots').rel,
             self.admin_site,
             'from_donation={id}'.format(id=self.instance.id)
@@ -111,6 +114,9 @@ class DonationAdmin(nested_admin.NestedModelAdmin):
         super(DonationAdmin,self).__init__(model, admin_site)
         self.form.admin_site = admin_site # capture the admin_site
 
+    def associated_items(self, obj):
+        return str(Item.objects.filter(donation_id=obj.id).count())
+
     def associated_lots(self, obj):
         return mark_safe(
             format_html_join(
@@ -133,12 +139,14 @@ class DonationAdmin(nested_admin.NestedModelAdmin):
         'guardsmen_contact',
         'auction_value',
         'auction_items',
+        'associated_items',
         'associated_lots',
+        'complete',
         'active',
         'inactive_reason'
     )
-    list_editable = ('category',)
-    list_filter = ('auction', 'active', 'category', )
+    list_editable = ('category', 'complete',)
+    list_filter = ('auction', 'active', 'category', 'complete', )
     readonly_fields = (
         'donation_actions',
     )
@@ -152,14 +160,14 @@ class DonationAdmin(nested_admin.NestedModelAdmin):
         ('Auction', {
             'fields': ('auction_items', 'auction_description', 'auction_value', 'auction_contact_point', 'delivery_method', 'special_instructions')
         }),
-        ('Actions', {
-            'fields': ('donation_actions', 'assigned_to_lots',)
-        }),
         ('Admin', {
-            'fields': ('active', 'inactive_reason')
+            'fields': ('complete', 'active', 'inactive_reason')
         }),
         ('Other', {
             'fields': ('guardsmen_contact',)
+        }),
+        ('Actions', {
+            'fields': ('assigned_to_lots', 'donation_actions',)
         }),
     )
     search_fields = ['donor_name', 'donor_organization', 'auction_items']
@@ -249,6 +257,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
                 'category': category,
                 'title': donation.donor_organization,
                 'description': donation.auction_description,
+                'image': donation.image,
                 'short_desc': donation.auction_items,
                 'FMV': donation.auction_value,
                 'start_bid': get_starting_bid(donation.auction_value),
@@ -265,7 +274,7 @@ class WineAdmin(admin.ModelAdmin):
     search_fields = ('year', 'description', 'item__title', 'lot__title')
     list_editable = ('year', 'description', 'size', 'qty', 'rating', 'confirmed')
 
-class ItemAdmin(admin.ModelAdmin):
+class ItemAdmin(nested_admin.NestedModelAdmin):
     list_display = (
         'lot',
         'description',
@@ -286,6 +295,9 @@ class ItemAdmin(admin.ModelAdmin):
         'location',
         'location_notes'
     )
+    inlines = [
+        WineInline
+    ]
     def get_changeform_initial_data(self, request):
 
         if request.GET.get('from_donation'):
@@ -305,8 +317,13 @@ class ItemAdmin(admin.ModelAdmin):
             else:
                 contact_point = donation.auction.contact_email
                 contact_name = donation.auction.auction_primary.name
+            try:
+                lot = donation.assigned_to_lots.all()[0]
+            except:
+                lot = None
             initial_data = {
                 'donation': donation,
+                'lot': lot,
                 'description': donation.auction_items,
                 'contact_name': contact_name,
                 'contact_point': contact_point,

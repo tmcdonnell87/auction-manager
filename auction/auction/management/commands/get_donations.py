@@ -1,11 +1,12 @@
 import datetime
 import os
 import re
-#import urllib
+import requests
 from pytz import timezone
+from io import BytesIO
 from django.core.management.base import BaseCommand
 from django.conf import settings
-#from django.core.files import File
+from django.core.files import File
 #from django.core.files.temp import NamedTemporaryFile
 from pyfoo import PyfooAPI
 
@@ -94,8 +95,10 @@ class Command(BaseCommand):
                     logo_str = entry['Field{}'.format(donation_form.logo_field)]
                     match = re.search(r'(.+) \((.+)\)', logo_str)
                     if match:
-                        # logo_name = match.group(1)
+                        logo_name = match.group(1)
                         logo_url = match.group(2)
+                        r = requests.get(logo_url)
+                        donation.image.save(logo_name, BytesIO(r.content), save=False)
                 donation.donor_organization = donor_organization
                 donation.donor_name = donor_name
                 donation.donor_email = donor_email

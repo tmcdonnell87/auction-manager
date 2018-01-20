@@ -65,9 +65,16 @@ class ItemForm(ModelForm):
                 lot_query = Lot.objects.filter(pk__in=lots)
             elif donation.auction:
                 lot_query = Lot.objects.filter(auction_id=donation.auction.id)
-        if not lot_query:
-            lot_query = Lot.objects.all()
-        self.fields['lot'].queryset = lot_query
+            self.fields['lot'].queryset = lot_query
+        if self.instance.lot:
+            lot = self.instance.lot
+            donations = [donation.id for donation in lot.donation_set.all()]
+            if donations:
+                donation_query = Donation.objects.filter(pk__in=donations)
+            elif lot.auction:
+                donation_query = Donation.objects.filter(lot__in=lot.auction.id)
+            self.fields['donation'].queryset = donation_query
+
 
 class WineInline(nested_admin.NestedTabularInline):
     model = Wine
@@ -181,12 +188,15 @@ class LotAdmin(nested_admin.NestedModelAdmin):
     formfield_overrides = {
         models.TextField: {'widget': Textarea(attrs={'cols': 80})},
     }
+    readonly_fields = (
+        'generate_materials',
+    )
     fieldsets = (
         ('Main', {
             'fields': ('auction', 'lot_number', 'title', 'type', 'category', )
         }),
         ('Description', {
-            'fields': ('short_desc', 'description', 'restrictions', 'image', 'FMV')
+            'fields': ('short_desc', 'description', 'restrictions', 'FMV', 'image', )
         }),
         ('Other Description', {
             'classes': ('collapse', ),
@@ -197,11 +207,14 @@ class LotAdmin(nested_admin.NestedModelAdmin):
         }),
 
         ('Financial', {
-            'fields': ('predicted_sale', 'acquisition_cost', 'actual_sale', 'tax_percentage')
+            'fields': ('predicted_sale', 'acquisition_cost', 'actual_sale', 'tax_percentage', )
         }),
         ('Tracking', {
-            'fields': ('complete', 'confirmed', 'notes')
+            'fields': ('complete', 'confirmed', 'notes', )
         }),
+        ('Actions', {
+            'fields': ('generate_materials', )
+        })
     )
     list_display = ('auction', 'lot_number', 'title', 'type', 'category', 'FMV')
     list_filter = ('auction', 'type', 'category')

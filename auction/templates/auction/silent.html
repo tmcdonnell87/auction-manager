@@ -1,0 +1,8 @@
+{% extends './list.html' %}
+{% load staticfiles i18n %}
+{% block css %}
+<link href="{% static 'css/silent.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+{% include './_silent.html' %}
+{% endblock %}

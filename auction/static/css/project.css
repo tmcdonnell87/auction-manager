@@ -1,5 +1,10 @@
 /* These styles are generated from project.scss. */
 
+@font-face {
+	font-family: "Trajan Pro";
+	src: url('../fonts/Trajan Pro Regular.ttf');
+}
+
 .alert-debug {
   color: black;
   background-color: white;
@@ -18,4 +23,27 @@
 */
 [hidden][style="display: block;"] {
   display: block !important;
+}
+
+.center {
+  text-align: center;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica"
+}
+
+.page {
+  page-break-before: always;
+}
+
+hr {
+  width: 100%;
 }

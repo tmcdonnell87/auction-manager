@@ -44,3 +44,32 @@ def LotBidPalListView(request, **kwargs):
         ])
     return response
 
+
+class LotListView(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super(LotListView, self).get_context_data(**kwargs)
+        qs = Lot.objects
+        if 'lot_number' in self.request.GET:
+            qs = qs.filter(lot_number__in=self.request.GET['lot_number'].split(','))
+        else:
+            qs = qs.filter(auction__id=kwargs['auction_id'])
+        qs = qs.filter(lot_number__lt=1000)
+        qs = qs.order_by('lot_number')
+        context['lots'] = qs
+        return context
+
+
+class LotReceiptListView(LotListView):
+    template_name = 'auction/receipt.html'
+
+
+class LotSilentListView(LotListView):
+    template_name = 'auction/silent.html'
+
+
+class OnSiteListView(LotListView):
+    template_name = 'auction/onsite.html'
+
+
+class LotView(LotListView):
+    template_name = 'auction/lot.html'

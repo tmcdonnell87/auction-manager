@@ -1,0 +1,43 @@
+body {
+  font-size: 14px;
+}
+
+.receipt-header {
+  text-align: center;
+  margin-top: -15px;
+  margin-bottom: 15px;
+  font-family: "Trajan Pro"
+}
+
+.receipt-header > h1 {
+  margin-top: -5px;
+}
+
+.receipt-header > img {
+  object-fit: cover;
+  width: 300px;
+  height: 200px;
+}
+
+.items-table {
+  width: 100%;
+  margin: 20px 0px;
+}
+
+table.items-table, .items-table th, .items-table td {
+  border: 1px solid black;
+}
+
+.items-table td {
+  padding: 10px 4px;
+}
+
+.receipt-footer {
+  margin-top: 40px;
+}
+
+ul.chairs {
+  list-style-type: none;
+  padding-left:0;
+  margin-bottom: 2px;
+}

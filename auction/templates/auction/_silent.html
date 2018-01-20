@@ -1,0 +1,66 @@
+{% load staticfiles i18n %}
+<div class="page full" style="background: url(
+  {% if lot.auction.slide_background %}{{ lot.auction.slide_background.url }}
+  {% else %}{% static 'images/pacifica-wine-division-vineyard-management-vineyard-grapes.png' %}){% endif %}">
+  <div class="header">
+    <div class="lot-number-display">
+      <div class="item-label">Item #</div>
+      <div class="lot-number">{{ lot.lot_number }}</div>
+    </div>
+    <h1 class="center title">{{lot.title}}</h1>
+  </div>
+  <hr>
+  <div class="content">
+    <h2>{{ lot.short_desc }}</h2>
+    <div class="item-container">
+      <div class="item-descriptions">
+        <ul>
+        {% for item in lot.item_set.all %}
+          <li class="item-description">
+            <div class="item-title">{{ item }}</div>
+            {% if item.wine_set.exists %}
+              <!-- note:
+                this won't look good if wines are split into multiple items
+                as the table won't align
+                -->
+              <table class="wine-table">
+              {% for wine in item.wine_set.all %}
+                <tr>
+                  <td>{{wine.year}}</td>
+                  <td>
+                    {{wine.description}}
+                    {% if wine.rating %}
+                    <span> ({{wine.rating}})</span>
+                    {% endif %}
+                  </td>
+                  <td style="min-width: 80px">{{wine.size}}<span> ({{wine.qty}})</td>
+                </tr>
+              {% endfor %}
+              </table>
+            {% endif %}
+          </li>
+        {% endfor %}
+        </ul>
+      </div>
+      {% if lot.image %}
+      <div class="lot-img">
+        <img src="{{ lot.image.url }}">
+      </div>
+      {% endif %}
+    </div>
+    <div class="fmv">
+      <b>Fair Market Value: </b>${{lot.FMV}}
+    </div>
+    {% if lot.description %}
+    <div class="lot-description">
+      <p><i>{{ lot.description | linebreaks }}</i></p>
+    </div>
+    {% endif %}
+    {% if lot.restrictions %}
+    <div class="restrictions">
+      <b>Restrictions: </b>{{lot.restrictions}}
+    </div>
+    {% endif %}
+  </div>
+  <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" />
+</div>

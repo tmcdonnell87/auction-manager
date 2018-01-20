@@ -1,0 +1,60 @@
+{% load staticfiles i18n %}
+<div class="page">
+  <div class="receipt-header">
+    {% if lot.auction.image %}
+    <img src="{{ lot.auction.image.url }}"/>
+    {% else %}
+    <img src="{% static 'images/transparent-logo.png' %}" style="width: 200px;"/>
+    {% endif %}
+    <h1>{{ lot.lot_number }} - {{ lot.title }}</h1>
+  </div>
+  <div class="receipt-content">
+    <!--<div>Congratulations on your purchase of auction lot #{{ lot.lot }}!</div>-->
+    {% if lot.description %}
+    <p><i>{{ lot.description | linebreaks }}</i></p>
+    {% endif %}
+    <table class="items-table">
+      <tr>
+        <th>Package Items</th>
+        <th style="width: 90px;">Pick Up at Event</th>
+        <th style="width: 20%;">Contact</th>
+        <!--th>Redemption Contact</th>-->
+      </tr>
+      {% for item in lot.item_set.all %}
+      <tr>
+        <td>
+          {{ item.description }}
+          {% if item.wine_set.exists %}
+            <ul>
+            {% for wine in item.wine_set.all %}
+              <li>{{wine}}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        </td>
+        <td class="center">{{ item.onsite_pickup|yesno:"Yes,No" }}</td>
+        <td class="center">{{ item.contact_info }}</td>
+        <!--<td class="center">{{ item.contact_point }}</td>-->
+      </tr>
+      {% endfor %}
+    </table>
+    <p><b>Fair Market Value: </b>${{ lot.FMV }}</p>
+    {% if lot.pickup_instructions %}
+    <p><b>Redemption instructions: </b>{{ lot.pickup_instructions }}</p>
+    {% endif %}
+    {% if lot.restrictions %}
+    <p><b>Restrictions: </b>{{ lot.restrictions }}</p>
+    {% endif %}
+  </div>
+  <div class="receipt-footer">
+    <p>Should you have any future issues redeeming your purchase, please contact {{ lot.auction.auction_primary.name }} at {{ lot.auction.contact_email }}.</p>
+    <p>Thank you for your support!
+      <ul class="chairs">
+        {% for chair in lot.auction.chairmen_list %}
+        <li>{{ chair.name }}</li>
+        {% endfor %}
+      </ul>
+      <i>Co­Chairs, {{ lot.auction.name }}</i>
+    </p>
+  </div>
+</div>

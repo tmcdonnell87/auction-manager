@@ -1,0 +1,8 @@
+{% extends './list.html' %}
+{% load staticfiles i18n %}
+{% block css %}
+<link href="{% static 'css/receipt.css' %}" rel="stylesheet">
+{% endblock %}
+{% block content %}
+{% include './_receipt.html' %}
+{% endblock %}

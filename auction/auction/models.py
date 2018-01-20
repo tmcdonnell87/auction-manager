@@ -45,6 +45,7 @@ class Auction(models.Model):
     date = models.DateField()
     contact_email = models.EmailField(max_length=255)
     image = models.ImageField(upload_to='uploads/auction/', null=True, blank=True)
+    slide_background = models.ImageField(upload_to='uploads/auction/', null=True, blank=True)
     donation_form = models.ForeignKey(
         DonationForm,
         null=True,
@@ -66,16 +67,22 @@ class Auction(models.Model):
     def auction_actions(self):
         return mark_safe(
             format_html(
-                '<a class="btn" href="{}" target="_blank">Generate BidPal</a>&nbsp;'
-                '<a class="btn" href="{}" target="_blank">Generate Displays (not built)</a>&nbsp;'
-                '<a class="btn" href="{}" target="_blank">Generate Receipts (not built)</a>&nbsp;',
-                reverse('auction:bidpal-csv', args=[self.id]),
-                reverse('admin:index'),
-                reverse('admin:index')
+                '<a class="btn" href="{bidpal}" target="_blank">Generate BidPal</a>&nbsp;'
+                '<a class="btn" href="{silent}" target="_blank">Generate Displays</a>&nbsp;'
+                '<a class="btn" href="{receipt}" target="_blank">Generate Receipts</a>&nbsp;'
+                '<a class="btn" href="{onsite}" target="_blank">Generate Onsite Pickup Lists</a>&nbsp;',
+                bidpal=reverse('auction:bidpal-csv', args=[self.id]),
+                silent=reverse('auction:receipt-list', args=[self.id]),
+                receipt=reverse('auction:slide-list', args=[self.id]),
+                onsite=reverse('auction:onsite-pickup-list', args=[self.id]),
             )
         )
     auction_actions.short_description = 'Auction Actions'
     auction_actions.allow_tags = True
+
+    @property
+    def chairmen_list(self):
+        return self.chairmen.order_by('name')
 
     def __str__(self):
         return self.abbr
@@ -169,10 +176,26 @@ class Lot(models.Model):
         blank=True,
     )
 
+    def generate_materials(self):
+        if not self.auction:
+            return 'Materials cannot be generated until the lot is assigned to an auction.'
+        if not self.lot_number:
+            return 'Materials cannot be generated until the lot is assigned a number.'
+        return mark_safe(format_html(
+            '<a class="btn" href="{url}?lot_number={num}" target="_blank">Generate Materials</a>',
+            url=reverse('auction:lot-list', args=[self.auction.id]),
+            num=self.lot_number,
+        ))
     def image_thumbnail(self):
-        return mark_safe('<img src="/uploads/lot/%s" width="50" height="50" />' % (self.image))
+        if not self.image:
+            return None
+        return mark_safe(format_html(
+            '<img src="{src}" width="100" height="100" />',
+            src=self.image.url,
+        ))
     image_thumbnail.short_description = 'Preview'
     image_thumbnail.allow_tags = True
+
     def __str__(self):
         return self.auction.abbr + ' - ' + self.type + '-' + str(self.lot_number) + '-' + self.title
     class Meta:
@@ -365,6 +388,15 @@ class Item(models.Model):
         null=True,
         blank=True,
     )
+
+    def contact_info(self):
+        if self.contact_name:
+            return '{name} ({point})'.format(name=self.contact_name, point=self.contact_point)
+        elif self.contact_point:
+            return self.contact_point
+        else:
+            return 'N/A'
+
     def __str__(self):
         return self.description
 

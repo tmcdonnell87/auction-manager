@@ -68,12 +68,12 @@ class Auction(models.Model):
         return mark_safe(
             format_html(
                 '<a class="btn" href="{bidpal}" target="_blank">Generate BidPal</a>&nbsp;'
-                '<a class="btn" href="{silent}" target="_blank">Generate Displays</a>&nbsp;'
                 '<a class="btn" href="{receipt}" target="_blank">Generate Receipts</a>&nbsp;'
+                '<a class="btn" href="{silent}" target="_blank">Generate Displays</a>&nbsp;'
                 '<a class="btn" href="{onsite}" target="_blank">Generate Onsite Pickup Lists</a>&nbsp;',
                 bidpal=reverse('auction:bidpal-csv', args=[self.id]),
-                silent=reverse('auction:receipt-list', args=[self.id]),
-                receipt=reverse('auction:slide-list', args=[self.id]),
+                receipt=reverse('auction:receipt-list', args=[self.id]),
+                silent=reverse('auction:slide-list', args=[self.id]),
                 onsite=reverse('auction:onsite-pickup-list', args=[self.id]),
             )
         )

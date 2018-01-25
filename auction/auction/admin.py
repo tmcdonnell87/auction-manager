@@ -46,8 +46,9 @@ class DonationAdminForm(ModelForm):
             self.admin_site,
             'from_donation={id}'.format(id=self.instance.id)
         )
-        self.fields['assigned_to_lots'].queryset = Lot.objects.filter(
-            auction_id=self.instance.auction.id)
+        if hasattr(self.instance, 'auction'):
+            self.fields['assigned_to_lots'].queryset = Lot.objects.filter(
+                auction_id=self.instance.auction.id)
 
 
 class ItemForm(ModelForm):

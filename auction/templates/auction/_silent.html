@@ -1,7 +1,9 @@
 {% load staticfiles i18n %}
-<div class="page full" style="background: url(
-  {% if lot.auction.slide_background %}{{ lot.auction.slide_background.url }}
-  {% else %}{% static 'images/pacifica-wine-division-vineyard-management-vineyard-grapes.png' %}){% endif %}">
+{% if lot.auction.slide_background %}
+<div class="page full" style="background: url({{ lot.auction.slide_background.url }})" />
+{% else %}
+<div class="page full" />
+{% endif %}
   <div class="header">
     <div class="lot-number-display">
       <div class="item-label">Item #</div>
@@ -62,5 +64,10 @@
     </div>
     {% endif %}
   </div>
-  <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" />
+  {% if lot.auction.image %}
+  <img class="guardsmen-brand" src="{{ lot.auction.image.url }}"/>
+  {% else %}
+  <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" style="width: 200px;"/>
+  {% endif %}
+
 </div>

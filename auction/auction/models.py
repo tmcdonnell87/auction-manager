@@ -339,7 +339,8 @@ class Donation(models.Model):
 LOCATIONS = (
     ('OFFICE', 'Guardsmen Office'),
     ('SFWC', 'SF Wine Center'),
-    ('OTHER', 'Other')
+    ('OTHER', 'Other'),
+    ('PICKUP', 'Pickup Required')
 )
 
 class Item(models.Model):

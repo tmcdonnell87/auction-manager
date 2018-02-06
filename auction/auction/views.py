@@ -22,9 +22,9 @@ def LotBidPalListView(request, **kwargs):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="bidpal.csv"'
     qs = Lot.objects \
-        .filter(auction__id=kwargs.get('auction'))
-    if 'lot' in request.GET:
-        qs = qs.filter(lot__in=request.GET['lot'].split(','))
+        .filter(auction__id=kwargs.get('auction_id'))
+    if 'lot_number' in request.GET:
+        qs = qs.filter(lot__in=request.GET['lot_number'].split(','))
     else:
         qs = qs.filter(confirmed=True)
     lots = qs.order_by('lot_number', 'category')
@@ -40,7 +40,7 @@ def LotBidPalListView(request, **kwargs):
             lot.start_bid,
             lot.min_raise,
             lot.get_type_display(),
-            lot.tax
+            lot.tax_percentage
         ])
     return response
 

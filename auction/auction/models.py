@@ -93,7 +93,7 @@ class Lot(models.Model):
         on_delete=models.PROTECT,
         help_text='The auction this lot is associated with'
     )
-    lot_number = models.PositiveSmallIntegerField(unique=True, db_index=True)
+    lot_number = models.PositiveSmallIntegerField(db_index=True)
     # Categories
     LIVE = 'L'
     SILENT = 'S'

@@ -340,6 +340,7 @@ LOCATIONS = (
     ('OFFICE', 'Guardsmen Office'),
     ('SFWC', 'SF Wine Center'),
     ('OTHER', 'Other'),
+    ('ELECTRONIC', 'Electronic'),
     ('PICKUP', 'Pickup Required')
 )
 
@@ -389,7 +390,12 @@ class Item(models.Model):
         null=True,
         blank=True,
     )
-
+    def auction(self):
+        if self.lot and self.lot.auction:
+            return self.lot.auction
+        if self.donation and self.donation.auction:
+            return self.donation.auction
+        return None
     def contact_info(self):
         if self.contact_name:
             return '{name} ({point})'.format(name=self.contact_name, point=self.contact_point)

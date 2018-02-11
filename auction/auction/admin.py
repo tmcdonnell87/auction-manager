@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html_join
 from django.core.urlresolvers import resolve, reverse
+from django.utils.translation import gettext_lazy as _
 
 import nested_admin
 from .models import (
@@ -288,11 +289,25 @@ class WineAdmin(admin.ModelAdmin):
     search_fields = ('year', 'description', 'item__title', 'lot__title')
     list_editable = ('year', 'description', 'size', 'qty', 'rating', 'confirmed')
 
+
+class ItemAuctionListFilter(admin.SimpleListFilter):
+    title = _('Auction')
+    parameter_name = 'auction'
+    def lookups(self, request, model_admin):
+        return [(a.id, a) for a in Auction.objects.all()]
+    def queryset(self, request, queryset):
+        # hacky
+        ids = [i.id for i in queryset if str(i.auction().id) == self.value()]
+        return queryset.filter(id__in=ids)
+        #return [i for i in queryset.all()]
+
 class ItemAdmin(nested_admin.NestedModelAdmin):
+    readonly_fields = ('auction',)
     list_display = (
+        'auction',
+        'donation',
         'lot',
         'description',
-        'donation',
         'onsite_pickup',
         'contact_name',
         'contact_point',
@@ -302,13 +317,13 @@ class ItemAdmin(nested_admin.NestedModelAdmin):
     search_fields = ('lot__title', 'description')
     list_editable = (
         'description',
-        'donation',
         'onsite_pickup',
         'contact_name',
         'contact_point',
         'location',
         'location_notes'
     )
+    list_filter = ('location', ItemAuctionListFilter,)
     inlines = [
         WineInline
     ]

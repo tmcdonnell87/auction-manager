@@ -312,7 +312,8 @@ class ItemAdmin(nested_admin.NestedModelAdmin):
         'contact_name',
         'contact_point',
         'location',
-        'location_notes'
+        'location_notes',
+        'item_notes',
     )
     search_fields = ('lot__title', 'description')
     list_editable = (
@@ -321,7 +322,7 @@ class ItemAdmin(nested_admin.NestedModelAdmin):
         'contact_name',
         'contact_point',
         'location',
-        'location_notes'
+        'location_notes',
     )
     list_filter = ('location', ItemAuctionListFilter,)
     inlines = [

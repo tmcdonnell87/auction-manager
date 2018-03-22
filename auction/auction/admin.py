@@ -257,7 +257,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
             lot_number = None
             try:
                 lot_number = Lot.objects.filter(category=category, auction_id=donation.auction.id).latest('lot_number').lot_number + 1
-                if Lot.objects.get(lot_number=lot_number):
+                if Lot.objects.get(lot_number=lot_number, auction_id=donation.auction.id):
                     lot_number = None
                     raise ObjectDoesNotExist
             except ObjectDoesNotExist:

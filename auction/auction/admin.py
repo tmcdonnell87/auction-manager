@@ -74,7 +74,7 @@ class ItemForm(ModelForm):
             if donations:
                 donation_query = Donation.objects.filter(pk__in=donations)
             elif lot.auction:
-                donation_query = Donation.objects.filter(lot__in=lot.auction.id)
+                donation_query = Donation.objects.filter(auction_id=lot.auction.id)
             self.fields['donation'].queryset = donation_query
 
 
@@ -253,7 +253,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
         if request.GET.get('from_donation'):
             donation_id = request.GET['from_donation']
             donation = Donation.objects.get(pk=donation_id)
-            category = donation.category[0] if donation.auction_value < 1200 else 'X'
+            category = donation.category[0] if not donation.auction_value or donation.auction_value < 1200 else 'X'
             lot_number = None
             try:
                 lot_number = Lot.objects.filter(category=category, auction_id=donation.auction.id).latest('lot_number').lot_number + 1

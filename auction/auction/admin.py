@@ -334,11 +334,13 @@ class ItemAdmin(nested_admin.NestedModelAdmin):
             donation_id = request.GET['from_donation']
             donation = Donation.objects.get(pk=donation_id)
             # location
-            if 'SF Wine Center' in donation.delivery_method:
-                location = 'SFWC'
-            elif 'Guardsmen Office' in donation.delivery_method:
-                location = 'OFFICE'
-            else:
+            location = None
+            if donation.delivery_method:
+                if 'SF Wine Center' in donation.delivery_method:
+                    location = 'SFWC'
+                elif 'Guardsmen Office' in donation.delivery_method:
+                    location = 'OFFICE'
+            if not location:
                 location = 'OTHER'
             # contact point
             if donation.auction_contact_point:

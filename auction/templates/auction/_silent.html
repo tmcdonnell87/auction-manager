@@ -65,7 +65,7 @@
     {% endif %}
   </div>
   {% if lot.auction.image %}
-  <img class="guardsmen-brand" src="{{ lot.auction.image.url }}"/>
+  <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" style="width: 200px;"/>
   {% else %}
   <img class="guardsmen-brand" src="{% static 'images/transparent-logo.png' %}" style="width: 200px;"/>
   {% endif %}

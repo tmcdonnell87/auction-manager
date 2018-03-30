@@ -51,8 +51,7 @@ class LotListView(TemplateView):
         qs = Lot.objects
         if 'lot_number' in self.request.GET:
             qs = qs.filter(lot_number__in=self.request.GET['lot_number'].split(','))
-        else:
-            qs = qs.filter(auction__id=kwargs['auction_id'])
+        qs = qs.filter(auction__id=kwargs['auction_id'])
         qs = qs.filter(lot_number__lt=1000)
         qs = qs.order_by('lot_number')
         context['lots'] = qs

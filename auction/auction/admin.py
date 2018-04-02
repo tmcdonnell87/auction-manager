@@ -218,10 +218,10 @@ class LotAdmin(nested_admin.NestedModelAdmin):
             'fields': ('generate_materials', )
         })
     )
-    list_display = ('auction', 'lot_number', 'title', 'type', 'category', 'FMV', 'confirmed')
+    list_display = ('auction', 'lot_number', 'title', 'tax_percentage', 'type', 'category', 'FMV', 'confirmed')
     list_filter = ('auction', 'type', 'category')
     search_fields = ['lot_number', 'title', 'short_desc']
-    list_editable = ('lot_number', 'title', 'type', 'category', 'FMV', 'confirmed')
+    list_editable = ('lot_number', 'title', 'type', 'tax_percentage', 'category', 'FMV', 'confirmed')
     ordering = ('lot_number', )
 
     def get_changeform_initial_data(self, request):

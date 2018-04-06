@@ -23,6 +23,8 @@ def LotBidPalListView(request, **kwargs):
     response['Content-Disposition'] = 'attachment; filename="bidpal.csv"'
     qs = Lot.objects \
         .filter(auction__id=kwargs.get('auction_id'))
+    if not 'pulled' in request.GET:
+        qs = qs.filter(pulled=False)
     if 'lot_number' in request.GET:
         qs = qs.filter(lot__in=request.GET['lot_number'].split(','))
     else:
@@ -49,6 +51,10 @@ class LotListView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(LotListView, self).get_context_data(**kwargs)
         qs = Lot.objects
+        if not 'pulled' in self.request.GET:
+            qs = qs.filter(pulled=False)
+        if 'complete' in self.request.GET:
+            qs = qs.filter(complete=self.request.GET['complete'])
         if 'lot_number' in self.request.GET:
             qs = qs.filter(lot_number__in=self.request.GET['lot_number'].split(','))
         qs = qs.filter(auction__id=kwargs['auction_id'])

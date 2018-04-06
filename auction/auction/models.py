@@ -120,7 +120,7 @@ class Lot(models.Model):
             (SUPERSILENT, 'Super Silent')
         ),
         default=OTHER,
-        max_length=1
+        max_length=2
     )
     # title and program
     title = models.CharField(max_length=50)
@@ -166,6 +166,10 @@ class Lot(models.Model):
         default=False,
         help_text='The items has been reviewed complete and available on-site for sale'
     )
+    pulled = models.BooleanField(
+        default=False,
+        help_text='The item has been removed from the auction'
+    )
     notes = models.TextField(
         blank=True,
         help_text='Internal notes on the lot'
@@ -205,6 +209,10 @@ class Lot(models.Model):
 DONATION_TYPES = (
     ('O', 'Other'),
     ('W', 'Wine'),
+    ('WT', 'Wine, Tasting'),
+    ('WL', 'Wine, Large Format'),
+    ('WU', 'Wine, Unique'),
+    ('WM', 'Wine, Mixed Lots'),
     ('G', 'Golf'),
     ('L', 'Beer, Liquor (non-wine)'),
     ('ST', 'Sports, Tickets'),

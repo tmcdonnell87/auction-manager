@@ -212,7 +212,7 @@ class LotAdmin(nested_admin.NestedModelAdmin):
             'fields': ('predicted_sale', 'acquisition_cost', 'actual_sale', 'tax_percentage', )
         }),
         ('Tracking', {
-            'fields': ('complete', 'confirmed', 'pulled', 'notes', )
+            'fields': ('complete', 'confirmed', 'pulled', 'extra', 'notes', )
         }),
         ('Actions', {
             'fields': ('generate_materials', )

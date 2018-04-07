@@ -170,6 +170,10 @@ class Lot(models.Model):
         default=False,
         help_text='The item has been removed from the auction'
     )
+    extra = models.PositiveSmallIntegerField(
+        default=0,
+        help_text='Extra inventory of the item for possible doubling'
+    )
     notes = models.TextField(
         blank=True,
         help_text='Internal notes on the lot'

@@ -1,0 +1,7 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'us.gcr.io/$PROJECT_ID/auction-manager', '-f', './compose/production/django/Dockerfile', '.' ]
+images:
+- 'us.gcr.io/$PROJECT_ID/auction-mangaer:$COMMIT_SHA'
+- 'us.gcr.io/$PROJECT_ID/auction-manager:latest'
+timeout: 3600s

@@ -85,6 +85,9 @@ env/
 venv/
 ENV/
 
+# Credentials
+*.cred.json
+
 # Spyder project settings
 .spyderproject
 .spyproject

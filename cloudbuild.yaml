@@ -1,6 +1,15 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: [ 'build', '-t', 'us.gcr.io/$PROJECT_ID/auction-manager', '-t', 'us.gcr.io/$PROJECT_ID/auction-manager:$COMMIT_SHA', '-f', './compose/production/django/Dockerfile', '.' ]
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - 'set'
+  - 'image'
+  - 'deployment/auction-manager'
+  - 'auction-manager=gcr.io/$PROJECT_ID/auction-manager:$COMMIT_SHA'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=auction-manager'
 images:
 - 'us.gcr.io/$PROJECT_ID/auction-manager:$COMMIT_SHA'
 - 'us.gcr.io/$PROJECT_ID/auction-manager:latest'

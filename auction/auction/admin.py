@@ -5,7 +5,7 @@ from django.forms import Textarea, ModelForm, SelectMultiple
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.safestring import mark_safe
 from django.utils.html import format_html_join
-from django.core.urlresolvers import resolve, reverse
+from django.urls import resolve, reverse
 from django.utils.translation import gettext_lazy as _
 
 import nested_admin

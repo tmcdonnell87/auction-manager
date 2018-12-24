@@ -1,34 +1,35 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
+app_name = 'auction'
 urlpatterns = [
-    url(
-        regex=r'^(?P<auction_id>.+)/lots$',
-        view=views.LotView.as_view(),
+    path(
+        '<int:auction_id>/lots',
+        views.LotView.as_view(),
         name='lot-list'
     ),
-    url(
-        regex=r'^(?P<auction_id>.+)/bidpal$',
-        view=views.LotBidPalListView,
+    path(
+        '<int:auction_id>/bidpal',
+        views.LotBidPalListView,
         name='bidpal-csv'
     ),
-    url(
-        regex=r'^(?P<auction_id>.+)/receipts$',
-        view=views.LotReceiptListView.as_view(),
+    path(
+        '<int:auction_id>/receipts',
+        views.LotReceiptListView.as_view(),
         name="receipt-list",
     ),
-    url(
-        regex=r'^(?P<auction_id>.+)/silent$',
-        view=views.LotSilentListView.as_view(),
+    path(
+        '<int:auction_id>/silent',
+        views.LotSilentListView.as_view(),
         name="slide-list",
     ),
-    url(
-        regex=r'^(?P<auction_id>.+)/onsite$',
-        view=views.OnSiteListView.as_view(),
+    path(
+        '<int:auction_id>/onsite',
+        views.OnSiteListView.as_view(),
         name="onsite-pickup-list",
     ),
 ]

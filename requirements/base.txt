@@ -1,16 +1,9 @@
-# Wheel 0.25+ needed to install certain packages on CPython 3.5+
-# like Pillow and psycopg2
-# See http://bitly.com/wheel-building-fails-CPython-35
-# Verified bug on Python 3.5.1
-wheel==0.30.0
-
-
 # Bleeding edge Django
-django==1.11.9 # pyup: >=1.10,<1.11
+django~=2.1
 
 # Configuration
-django-environ==0.4.4
-whitenoise==3.3.1
+django-environ==0.4.5
+whitenoise==4.1
 
 
 # Forms
@@ -20,10 +13,10 @@ django-crispy-forms==1.7.0
 django-model-utils==3.0.0
 
 # Images
-Pillow==4.3.0
+Pillow==5.3.0
 
 # Password storage
-argon2-cffi==16.3.0
+argon2-cffi==18.3.0
 
 # For user registration, either via email or social
 # Well-built with regular release cycles!
@@ -37,7 +30,7 @@ psycopg2==2.7.3.1
 awesome-slugify==1.6.5
 
 # Time zones support
-pytz==2017.2
+pytz==2018.5
 
 # Redis support
 django-redis==4.8.0
@@ -48,8 +41,8 @@ redis>=2.10.5
 
 
 # Your custom requirements go here
-django-suit==0.2.24
-django-nested-admin==3.0.20
+# django-suit==0.2.24
+django-nested-admin==3.1.3
 git+https://github.com/wufoo/pyfoo.git#egg=pyfoo
 # django-wkhtmltopdf==3.1.0
-# django-grappelli==2.9.1
+django-grappelli==2.12.1

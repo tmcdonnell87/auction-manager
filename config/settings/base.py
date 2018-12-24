@@ -20,11 +20,11 @@ READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=True)
 
 
 if READ_DOT_ENV_FILE:
-    # Operating System Environment variables have precedence over variables defined in the .env file,
+    # Operating Syste Environment variables have precedence over variables defined in the .env file,
     # that is to say variables from the .env files will only be used if not defined
     # as environment variables.
     env_file = str(ROOT_DIR.path('.env'))
-    print('Loading : {}'.format(env_file))
+    print('Loading: {}'.format(env_file))
     env.read_env(env_file)
     print('The .env file has been loaded. See base.py for more information')
 
@@ -36,7 +36,7 @@ DEBUG = env.bool('DJANGO_DEBUG', default=True)
 DJANGO_APPS = [
     # Django suit for admin UI
     'nested_admin',
-    'suit',
+    'grappelli',
 
     # Default Django apps:
     'django.contrib.auth',
@@ -273,7 +273,7 @@ AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
 
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
-ADMIN_URL = r'^admin/'
+ADMIN_URL = 'admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
@@ -290,3 +290,5 @@ SUIT_CONFIG = {
     )
 
 }
+
+GRAPPELLI_ADMIN_TITLE = 'Guardsmen Auction Manager'

@@ -1,0 +1,131 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: auction-manager
+  name: auction-manager
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auction-manager
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: auction-manager
+    spec:
+      containers:
+      - args:
+        - /gunicorn.sh
+        env:
+        - name: DEFAULT_FILE_STORAGE
+          value: storages.backends.gcloud.GoogleCloudStorage
+        - name: DJANGO_ACCOUNT_ALLOW_REGISTRATION
+          value: "False"
+        - name: DJANGO_SECURE_SSL_REDIRECT
+          value: "False"
+        - name: USE_DOCKER
+          value: "yes"
+        - name: DJANGO_SETTINGS_MODULE
+          value: config.settings.production
+        - name: DJANGO_ALLOWED_HOSTS
+          value: '*'
+        - name: DJANGO_DEBUG
+          value: "False"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: DATABASE_URL
+        - name: WUFOO_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: WUFOO_API_KEY
+        - name: DJANGO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: credentials
+              key: DJANGO_SECRET_KEY
+        image: auction-manager_django
+        name: auction-manager
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: auction-manager
+  name: auction-manager-service
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: auction-manager
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  labels:
+    app: auction-manager
+  name: auction-manager-job-update
+spec:
+  schedule: "0/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - args:
+            - python
+            - manage.py
+            - get_donations
+            env:
+            - name: DEFAULT_FILE_STORAGE
+              value: storages.backends.gcloud.GoogleCloudStorage
+            - name: USE_DOCKER
+              value: "yes"
+            - name: DJANGO_SETTINGS_MODULE
+              value: config.settings.production
+            - name: DJANGO_DEBUG
+              value: "False"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: DATABASE_URL
+            - name: WUFOO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: WUFOO_API_KEY
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: DJANGO_SECRET_KEY
+            image: auction-manager_django
+            name: auction-manager
+            imagePullPolicy: IfNotPresent
+          restartPolicy: Never
+      backoffLimit: 4

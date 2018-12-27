@@ -20,6 +20,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--overwrite', action="store_true")
+        parser.add_argument('--form', nargs='?', default=None)
 
     def handle(self, *_, **options):
         auctions = Auction.objects.filter(
@@ -34,6 +35,8 @@ class Command(BaseCommand):
             try:
                 wufoo_form = next(x for x in api.forms if x.Hash == donation_form.hash)
             except StopIteration:
+                continue
+            if options['form'] and donation_form.id != options['form']:
                 continue
             entries = wufoo_form.get_entries(page_size=wufoo_form.entry_count)
             entries = [x for x in entries if x['CompleteSubmission']]
@@ -115,3 +118,4 @@ class Command(BaseCommand):
                 donation.form_updated_time = form_updated_time
                 donation.image_upload_link = logo_url
                 donation.save()
+        print('Donations processed succesfully')

@@ -1,5 +1,5 @@
 www.{$DOMAIN_NAME} {
-    redir https://guardsmen.org
+    redir https://{$DOMAIN_NAME}
 }
 
 {$DOMAIN_NAME} {

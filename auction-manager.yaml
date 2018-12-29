@@ -22,45 +22,58 @@ spec:
       labels:
         app: auction-manager
     spec:
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: guardsmen-auction-manager-credentials
       containers:
-      - args:
+      - name: auction-manager
+        args:
         - /gunicorn.sh
+        volumeMounts:
+          - name: google-cloud-key
+            mountPath: /var/secrets/google
         env:
-        - name: DEFAULT_FILE_STORAGE
-          value: storages.backends.gcloud.GoogleCloudStorage
-        - name: DJANGO_ACCOUNT_ALLOW_REGISTRATION
-          value: "False"
-        - name: DJANGO_SECURE_SSL_REDIRECT
-          value: "False"
-        - name: USE_DOCKER
-          value: "yes"
-        - name: DJANGO_SETTINGS_MODULE
-          value: config.settings.production
-        - name: DJANGO_ALLOWED_HOSTS
-          value: '*'
-        - name: DJANGO_DEBUG
-          value: "False"
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: credentials
-              key: DATABASE_URL
-        - name: WUFOO_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: credentials
-              key: WUFOO_API_KEY
-        - name: DJANGO_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: credentials
-              key: DJANGO_SECRET_KEY
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /var/secrets/google/auction-manager.credentials.json
+          - name: DEFAULT_FILE_STORAGE
+            value: storages.backends.gcloud.GoogleCloudStorage
+          - name: USE_DOCKER
+            value: "yes"
+          - name: DJANGO_SETTINGS_MODULE
+            value: config.settings.production
+          - name: DJANGO_DEBUG
+            value: "True"
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: credentials
+                key: DATABASE_URL
+          - name: DJANGO_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: credentials
+                key: DJANGO_SECRET_KEY
         image: auction-manager_django
         name: auction-manager
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
         resources: {}
+      - name: cloudsql-proxy
+        image: gcr.io/cloudsql-docker/gce-proxy:1.11
+        command: ["/cloud_sql_proxy",
+                  "-instances=guardsmen:us-west1:basic=tcp:5432",
+                  "-credential_file=/secrets/cloudsql/auction-manager.credentials.json"]
+        # [START cloudsql_security_context]
+        securityContext:
+          runAsUser: 2  # non-root user
+          allowPrivilegeEscalation: false
+        # [END cloudsql_security_context]
+        volumeMounts:
+          - name: google-cloud-key
+            mountPath: /secrets/cloudsql
+            readOnly: true
       restartPolicy: Always
 status: {}
 ---
@@ -83,6 +96,44 @@ spec:
 status:
   loadBalancer: {}
 ---
+# ***Uncomment to enable PodPreset config***
+# apiVersion: settings.k8s.io/v1alpha1
+# kind: PodPreset
+# metadata:
+#   name: manager-config
+# spec:
+#   selector:
+#     matchLabels:
+#       app: auction-manager
+#   volumes:
+#     - name: google-cloud-key
+#       secret:
+#         secretName: guardsmen-auction-manager-storage-credentials
+#   volumeMounts:
+#     - name: google-cloud-key
+#       mountPath: /var/secrets/google
+#   env:
+#     - name: GOOGLE_APPLICATION_CREDENTIALS
+#       value: /var/secrets/google/auction-manager.credentials.json
+#     - name: DEFAULT_FILE_STORAGE
+#       value: storages.backends.gcloud.GoogleCloudStorage
+#     - name: USE_DOCKER
+#       value: "yes"
+#     - name: DJANGO_SETTINGS_MODULE
+#       value: config.settings.production
+#     - name: DJANGO_DEBUG
+#       value: "False"
+#     - name: DATABASE_URL
+#       valueFrom:
+#         secretKeyRef:
+#           name: credentials
+#           key: DATABASE_URL
+#     - name: DJANGO_SECRET_KEY
+#       valueFrom:
+#         secretKeyRef:
+#           name: credentials
+#           key: DJANGO_SECRET_KEY
+# ---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -95,37 +146,64 @@ spec:
     spec:
       template:
         spec:
+          volumes:
+          - name: google-cloud-key
+            secret:
+              secretName: guardsmen-auction-manager-storage-credentials
+          volumes:
+            - name: google-cloud-key
+              secret:
+                secretName: guardsmen-auction-manager-storage-credentials
           containers:
-          - args:
-            - python
-            - manage.py
-            - get_donations
+          - name: auction-manager
+            args:
+              - python
+              - manage.py
+              - get_donations
+            volumeMounts:
+              - name: google-cloud-key
+                mountPath: /var/secrets/google
             env:
-            - name: DEFAULT_FILE_STORAGE
-              value: storages.backends.gcloud.GoogleCloudStorage
-            - name: USE_DOCKER
-              value: "yes"
-            - name: DJANGO_SETTINGS_MODULE
-              value: config.settings.production
-            - name: DJANGO_DEBUG
-              value: "False"
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: credentials
-                  key: DATABASE_URL
-            - name: WUFOO_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: credentials
-                  key: WUFOO_API_KEY
-            - name: DJANGO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: credentials
-                  key: DJANGO_SECRET_KEY
+              - name: GOOGLE_APPLICATION_CREDENTIALS
+                value: /var/secrets/google/auction-manager.credentials.json
+              - name: DEFAULT_FILE_STORAGE
+                value: storages.backends.gcloud.GoogleCloudStorage
+              - name: USE_DOCKER
+                value: "yes"
+              - name: DJANGO_SETTINGS_MODULE
+                value: config.settings.production
+              - name: DJANGO_DEBUG
+                value: "False"
+              - name: DATABASE_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: credentials
+                    key: DATABASE_URL
+              - name: DJANGO_SECRET_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: credentials
+                    key: DJANGO_SECRET_KEY
+              - name: WUFOO_API_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: credentials
+                    key: WUFOO_API_KEY
             image: auction-manager_django
-            name: auction-manager
             imagePullPolicy: IfNotPresent
+          - name: cloudsql-proxy
+            image: gcr.io/cloudsql-docker/gce-proxy:1.11
+            command: ["/cloud_sql_proxy",
+                      "-instances=guardsmen:us-west1:basic=tcp:5432",
+                      "-credential_file=/secrets/cloudsql/auction-manager.credentials.json"]
+            # [START cloudsql_security_context]
+            securityContext:
+              runAsUser: 2  # non-root user
+              allowPrivilegeEscalation: false
+            # [END cloudsql_security_context]
+            volumeMounts:
+              - name: google-cloud-key
+                mountPath: /secrets/cloudsql
+                readOnly: true
           restartPolicy: Never
       backoffLimit: 4

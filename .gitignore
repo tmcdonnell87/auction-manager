@@ -87,6 +87,7 @@ ENV/
 
 # Credentials
 *.cred.json
+*.credentials.json
 
 # Spyder project settings
 .spyderproject

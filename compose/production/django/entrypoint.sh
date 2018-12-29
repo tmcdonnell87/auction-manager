@@ -21,7 +21,7 @@ if [ -z "$POSTGRES_USER" ]; then
 fi
 
 if [ -z "$DATABASE_URL" ]; then
-    export DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres:5432/$POSTGRES_USER
+    export DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:5432/$POSTGRES_USER
 fi
 
 function postgres_ready(){

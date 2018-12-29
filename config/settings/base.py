@@ -36,7 +36,7 @@ DEBUG = env.bool('DJANGO_DEBUG', default=True)
 DJANGO_APPS = [
     # Django suit for admin UI
     'nested_admin',
-    'grappelli',
+    'auction.auction.apps.SuitConfig',
 
     # Default Django apps:
     'django.contrib.auth',

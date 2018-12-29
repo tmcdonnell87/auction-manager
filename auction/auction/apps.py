@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-
+from suit.apps import DjangoSuitConfig
 
 class AuctionConfig(AppConfig):
     name = 'auction.auction'
@@ -11,3 +11,6 @@ class AuctionConfig(AppConfig):
             Users signal registration
         """
         pass
+
+class SuitConfig(DjangoSuitConfig):
+    layout = 'horizontal'

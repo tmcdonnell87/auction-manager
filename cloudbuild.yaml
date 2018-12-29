@@ -9,7 +9,7 @@ steps:
   - 'auction-manager=us.gcr.io/$PROJECT_ID/auction-manager:$COMMIT_SHA'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=auction-manager'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=main'
 images:
 - 'us.gcr.io/$PROJECT_ID/auction-manager:$COMMIT_SHA'
 - 'us.gcr.io/$PROJECT_ID/auction-manager:latest'

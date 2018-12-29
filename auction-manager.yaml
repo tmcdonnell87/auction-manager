@@ -43,7 +43,7 @@ spec:
           - name: DJANGO_SETTINGS_MODULE
             value: config.settings.production
           - name: DJANGO_DEBUG
-            value: "True"
+            value: "False"
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
@@ -54,7 +54,7 @@ spec:
               secretKeyRef:
                 name: credentials
                 key: DJANGO_SECRET_KEY
-        image: auction-manager_django
+        image: us.gcr.io/guardsmen/auction-manager
         name: auction-manager
         imagePullPolicy: IfNotPresent
         ports:
@@ -189,7 +189,7 @@ spec:
                   secretKeyRef:
                     name: credentials
                     key: WUFOO_API_KEY
-            image: auction-manager_django
+            image: us.gcr.io/guardsmen/auction-manager
             imagePullPolicy: IfNotPresent
           - name: cloudsql-proxy
             image: gcr.io/cloudsql-docker/gce-proxy:1.11

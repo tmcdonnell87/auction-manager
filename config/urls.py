@@ -5,6 +5,8 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
+admin.site.site_header = 'Guardsmen Auctions'
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name='pages/home.html'), name='home'),
 

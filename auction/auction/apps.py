@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from suit.apps import DjangoSuitConfig
+from suit.menu import ParentItem, ChildItem
 
 class AuctionConfig(AppConfig):
     name = 'auction.auction'
@@ -14,3 +15,9 @@ class AuctionConfig(AppConfig):
 
 class SuitConfig(DjangoSuitConfig):
     layout = 'horizontal'
+    menu = (
+        ParentItem('Auction', children=[
+            ChildItem(model='auction.donation'),
+            ChildItem(model='auction.lot'),
+        ]),
+    )

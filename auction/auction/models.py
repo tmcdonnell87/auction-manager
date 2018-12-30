@@ -213,20 +213,10 @@ class Lot(models.Model):
 DONATION_TYPES = (
     ('O', 'Other'),
     ('W', 'Wine'),
-    ('WT', 'Wine, Tasting'),
-    ('WL', 'Wine, Large Format'),
-    ('WU', 'Wine, Unique'),
-    ('WM', 'Wine, Mixed Lots'),
     ('G', 'Golf'),
-    ('L', 'Beer, Liquor (non-wine)'),
-    ('ST', 'Sports, Tickets'),
-    ('SG', 'Sports, Memorabilia, Giants'),
-    ('S4', 'Sports, Memorabilia, 49ers'),
-    ('SC', 'Sports, Memorabilia, Cal/Stanford'),
-    ('SC', 'Sports, Memorabilia, Other'),
-    ('EV', 'Experiences, Vacation'),
-    ('EL', 'Experiences, Local'),
-    ('R', 'Restaurant'),
+    ('S', 'Sports'),
+    ('E', 'Experiences'),
+    ('R', 'Restaurants'),
 )
 class Donation(models.Model):
     auction = models.ForeignKey(
@@ -241,7 +231,9 @@ class Donation(models.Model):
         help_text='The donation form'
     )
     form_entry_number = models.PositiveIntegerField(
-        help_text='The entry number of the donation form'
+        help_text='The entry number of the donation form',
+        null=True,
+        blank=True,
     )
     donor_organization = models.CharField(
         max_length=140,
@@ -320,7 +312,8 @@ class Donation(models.Model):
     )
     category = models.CharField(
         choices=DONATION_TYPES,
-        default='O',
+        null=True,
+        blank=True,
         max_length=2
     )
     assigned_to_lots = models.ManyToManyField(

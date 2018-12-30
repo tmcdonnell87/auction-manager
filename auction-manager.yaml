@@ -44,6 +44,10 @@ spec:
             value: config.settings.production
           - name: DJANGO_DEBUG
             value: "False"
+          - name: GS_PROJECT_ID
+            value: guardsmen
+          - name: GS_BUCKET_NAME
+            value: guardsmen-auction-manager
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
@@ -60,20 +64,20 @@ spec:
         ports:
         - containerPort: 5000
         resources: {}
-      - name: cloudsql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy:1.11
-        command: ["/cloud_sql_proxy",
-                  "-instances=guardsmen:us-west1:basic=tcp:5432",
-                  "-credential_file=/secrets/cloudsql/auction-manager.credentials.json"]
-        # [START cloudsql_security_context]
-        securityContext:
-          runAsUser: 2  # non-root user
-          allowPrivilegeEscalation: false
-        # [END cloudsql_security_context]
-        volumeMounts:
-          - name: google-cloud-key
-            mountPath: /secrets/cloudsql
-            readOnly: true
+#      - name: cloudsql-proxy
+#        image: gcr.io/cloudsql-docker/gce-proxy:1.11
+#        command: ["/cloud_sql_proxy",
+#                  "-instances=guardsmen:us-west1:basic=tcp:5432",
+#                  "-credential_file=/secrets/cloudsql/auction-manager.credentials.json"]
+#        # [START cloudsql_security_context]
+#        securityContext:
+#          runAsUser: 2  # non-root user
+#          allowPrivilegeEscalation: false
+#        # [END cloudsql_security_context]
+#        volumeMounts:
+#          - name: google-cloud-key
+#            mountPath: /secrets/cloudsql
+#            readOnly: true
       restartPolicy: Always
 status: {}
 ---
@@ -141,7 +145,7 @@ metadata:
     app: auction-manager
   name: auction-manager-job-update
 spec:
-  schedule: "0/10 * * * *"
+  schedule: "0 12 * * *"
   jobTemplate:
     spec:
       template:
@@ -174,6 +178,10 @@ spec:
                 value: config.settings.production
               - name: DJANGO_DEBUG
                 value: "False"
+              - name: GS_PROJECT_ID
+                value: guardsmen
+              - name: GS_BUCKET_NAME
+                value: guardsmen-auction-manager
               - name: DATABASE_URL
                 valueFrom:
                   secretKeyRef:
@@ -191,19 +199,19 @@ spec:
                     key: WUFOO_API_KEY
             image: us.gcr.io/guardsmen/auction-manager
             imagePullPolicy: IfNotPresent
-          - name: cloudsql-proxy
-            image: gcr.io/cloudsql-docker/gce-proxy:1.11
-            command: ["/cloud_sql_proxy",
-                      "-instances=guardsmen:us-west1:basic=tcp:5432",
-                      "-credential_file=/secrets/cloudsql/auction-manager.credentials.json"]
-            # [START cloudsql_security_context]
-            securityContext:
-              runAsUser: 2  # non-root user
-              allowPrivilegeEscalation: false
-            # [END cloudsql_security_context]
-            volumeMounts:
-              - name: google-cloud-key
-                mountPath: /secrets/cloudsql
-                readOnly: true
+#          - name: cloudsql-proxy
+#            image: gcr.io/cloudsql-docker/gce-proxy:1.11
+#            command: ["/cloud_sql_proxy",
+#                      "-instances=guardsmen:us-west1:basic=tcp:5432",
+#                      "-credential_file=/secrets/cloudsql/auction-manager.credentials.json"]
+#            # [START cloudsql_security_context]
+#            securityContext:
+#              runAsUser: 2  # non-root user
+#              allowPrivilegeEscalation: false
+#            # [END cloudsql_security_context]
+#            volumeMounts:
+#              - name: google-cloud-key
+#                mountPath: /secrets/cloudsql
+#                readOnly: true
           restartPolicy: Never
       backoffLimit: 4

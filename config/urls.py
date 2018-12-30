@@ -12,7 +12,7 @@ urlpatterns = [
 
     # Django Admin, use {% url 'admin:index' %}
     path("_nested_admin/", include('nested_admin.urls')),
-    path('grappelli/', include('grappelli.urls')), # grappelli URLS
+    # path('grappelli/', include('grappelli.urls')), # grappelli URLS
     path(settings.ADMIN_URL, admin.site.urls),
 
     # User management

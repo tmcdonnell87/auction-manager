@@ -112,7 +112,7 @@ status:
 #   volumes:
 #     - name: google-cloud-key
 #       secret:
-#         secretName: guardsmen-auction-manager-storage-credentials
+#         secretName: guardsmen-auction-manager-credentials
 #   volumeMounts:
 #     - name: google-cloud-key
 #       mountPath: /var/secrets/google
@@ -153,11 +153,11 @@ spec:
           volumes:
           - name: google-cloud-key
             secret:
-              secretName: guardsmen-auction-manager-storage-credentials
+              secretName: guardsmen-auction-manager-credentials
           volumes:
             - name: google-cloud-key
               secret:
-                secretName: guardsmen-auction-manager-storage-credentials
+                secretName: guardsmen-auction-manager-credentials
           containers:
           - name: auction-manager
             args:

@@ -38,17 +38,15 @@ class DonationAdminForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DonationAdminForm, self).__init__(*args, **kwargs)
-        """
         self.fields['assigned_to_lots'].widget = PrepopulatedRelatedFieldWidgetWrapper(
             admin.widgets.FilteredSelectMultiple(
                 'Items',
                 is_stacked=False,
             ),
-            Donation._meta.get_field('assigned_to_lots'),
+            Donation._meta.get_field('assigned_to_lots').remote_field,
             self.admin_site,
             'from_donation={id}'.format(id=self.instance.id)
         )
-        """
         if hasattr(self.instance, 'auction'):
             self.fields['assigned_to_lots'].queryset = Lot.objects.filter(
                 auction_id=self.instance.auction.id)
